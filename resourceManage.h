@@ -7,5 +7,6 @@
 #ifndef RES_MAN_H
 #define RES_MAN_H
 
+#include "shared.h"
 
 #endif

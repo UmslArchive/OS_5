@@ -7,5 +7,7 @@
 #ifndef PROC_MAN_H
 #define PROC_MAN_H
 
+#include "shared.h"
+
 
 #endif

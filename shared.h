@@ -55,6 +55,7 @@ typedef struct {
 void initClock(Clock* clock);
 void initPCB(PCB* pcb, unsigned int sPID, unsigned int prio);
 void tickClock(Clock* mainClock, unsigned int sec, unsigned int nanosec);
+void printClock(Clock* clock);
 void resetMSG(MSG* msg);
 void setMSG(MSG* msg, unsigned int sPID, unsigned int quant);
 void subtractTimes(Clock* newTime, Clock* t1, Clock* t2);

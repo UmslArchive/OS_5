@@ -30,6 +30,13 @@ void initClock(Clock* clock){
     clock->seconds = 0;
 }
 
+void printClock(Clock* clock) {
+    if(clock != NULL)
+        fprintf(stderr, "Clock Reads %d:%.9d\n", clock->seconds, clock->nanoseconds);
+    else
+        fprintf(stderr, "Clock is null\n");
+}
+
 void initPCB(PCB* pcb, unsigned int sPID, unsigned int prio){
     pcb->simPID = sPID;     //corresponds to bit vector index (converted to count from 1)
     pcb->priority = prio;
