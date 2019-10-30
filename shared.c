@@ -6,7 +6,7 @@
 
 #include "shared.h"
 
-void tickClock(Clock* mainClock, int sec, int nanosec) {
+void tickClock(Clock* mainClock, unsigned int sec, unsigned int nanosec) {
     //Subtract seconds off of nanoseconds if >= 1,000,000,000 
     while(nanosec >= 1000000000) {
         ++sec;
