@@ -11,13 +11,13 @@
 int main(int arg, char* argv[]) {
 
     //Register signal handler
-    usrInitSignalHandlers();
+    usrInitSignalHandler();
     sigaction(SIGTERM, &usrSigAction, 0);
 
     while(1) {
-        
+
         //Check if a signal was received
-        if(usrSignalReceived == 1)
+        if(usrSignalReceivedFlag == 1)
             break;
     }
     

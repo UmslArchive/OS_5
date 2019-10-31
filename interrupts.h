@@ -14,14 +14,14 @@
 #include <stdio.h>
 #include <unistd.h>
 
-extern int ossSignalReceived;
-extern int usrSignalReceived;
+extern int ossSignalReceivedFlag;
+extern int usrSignalReceivedFlag;
 
 extern struct sigaction ossSigAction;
 extern struct sigaction usrSigAction;
 
-void ossInitSignalHandlers();
-void usrInitSignalHandlers();
+void ossInitSignalHandler();
+void usrInitSignalHandler();
 
 void ossSignalHandler(int signal);
 void usrSignalHandler(int signal);

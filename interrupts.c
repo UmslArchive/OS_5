@@ -6,11 +6,11 @@
 
 #include "interrupts.h"
 
-//Global signal received indicator flags
-int ossSignalReceived = 0;
-int usrSignalReceived = 0;
+//Global signal flags
+int ossSignalReceivedFlag = 0;
+int usrSignalReceivedFlag = 0;
 
-//Signal 
+//Global sigaction structs
 struct sigaction ossSigAction;
 struct sigaction usrSigAction;
 
@@ -19,8 +19,12 @@ void ossSignalHandler(int signal) {
         case SIGINT:
             fprintf(stderr, "\nOSS caught SIGINT signal\n");
             break;
+
+        case SIGALRM:
+            fprintf(stderr, "\nOSS caught SIGALRM signal\n");
+            break;
     }    
-    ossSignalReceived = 1;
+    ossSignalReceivedFlag = 1;
 }
 
 void usrSignalHandler(int signal) {
@@ -30,15 +34,15 @@ void usrSignalHandler(int signal) {
             fprintf(stderr, "Child PID %d detaching from shared memory...\n", getpid());
             break;
     }    
-    usrSignalReceived = 1;
+    usrSignalReceivedFlag = 1;
 }
 
-void ossInitSignalHandlers() {
+void ossInitSignalHandler() {
     memset(&ossSigAction, 0, sizeof(ossSigAction));
     ossSigAction.sa_handler = ossSignalHandler;
 }
 
-void usrInitSignalHandlers() {
+void usrInitSignalHandler() {
     memset(&usrSigAction, 0, sizeof(usrSigAction));
     usrSigAction.sa_handler = usrSignalHandler;
 }

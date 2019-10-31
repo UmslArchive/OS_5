@@ -10,14 +10,16 @@
 
 int main(int arg, char* argv[]) {
 
-    //Register signal handler
-    ossInitSignalHandlers();
+    //Register signal handlers
+    ossInitSignalHandler();
     sigaction(SIGINT, &ossSigAction, 0);
+    sigaction(SIGALRM, &ossSigAction, 0);
+
+    alarm(3);
 
     while(1) {
-
         //Check if a signal was received
-        if(ossSignalReceived == 1)
+        if(ossSignalReceivedFlag == 1)
             break;
     }
 
