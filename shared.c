@@ -50,10 +50,8 @@ void* initSharedMemory(key_t* key, size_t* size, int* shmid, int flags) {
     //Allocate shared memory and get an id
     *shmid = shmget(*key, *size, flags);
     if(*shmid < 0) {
-        switch(*key) {
-            case (int)SHM_KEY_CLOCK:
+        if(*key == SHM_KEY_CLOCK) {
             perror("ERROR:shmid failed(clock)");
-            break;
         }
         cleanupAll();
         exit(10);
