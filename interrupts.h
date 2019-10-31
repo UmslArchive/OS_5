@@ -12,6 +12,13 @@
 #include <signal.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
+
+extern int ossSignalReceived;
+extern int usrSignalReceived;
+
+extern struct sigaction ossSigAction;
+extern struct sigaction usrSigAction;
 
 void ossInitSignalHandlers();
 void usrInitSignalHandlers();

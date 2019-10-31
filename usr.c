@@ -9,5 +9,16 @@
 #include "interrupts.h"
 
 int main(int arg, char* argv[]) {
+
+    //Register signal handler
+    usrInitSignalHandlers();
+    sigaction(SIGTERM, &usrSigAction, 0);
+
+    while(1) {
+        
+        //Check if a signal was received
+        if(usrSignalReceived == 1)
+            break;
+    }
     
 }

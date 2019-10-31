@@ -14,8 +14,8 @@ all: oss usr
 oss: oss.o $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ oss.o $(OBJECTS) -lpthread
 
-usrPs: user.o $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ userPs.o $(OBJECTS) -lpthread
+usr: usr.o $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ usr.o $(OBJECTS) -lpthread
 
 .c.o:
 	$(CC) $(CFLAGS) -c $<

@@ -9,11 +9,16 @@
 #include "interrupts.h"
 
 int main(int arg, char* argv[]) {
-    Clock* c = initClock();
+
+    //Register signal handler
+    ossInitSignalHandlers();
+    sigaction(SIGINT, &ossSigAction, 0);
 
     while(1) {
 
+        //Check if a signal was received
+        if(ossSignalReceived == 1)
+            break;
     }
 
-    free(c);
 }
