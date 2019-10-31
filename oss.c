@@ -4,13 +4,16 @@
 //Date:     11/5/19
 //=========================================================
 
-#include "processManage.h"
 #include "resourceManage.h"
-
-//========================================================
-//---------------------MAIN-------------------------------
-//========================================================
+#include "processManage.h"
+#include "interrupts.h"
 
 int main(int arg, char* argv[]) {
-    
+    Clock* c = initClock();
+
+    while(1) {
+
+    }
+
+    free(c);
 }
