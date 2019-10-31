@@ -43,7 +43,7 @@ typedef struct clock_struct {
 } Clock;
 
 //Shared mem init functions
-//sem_t* initShmSemaphore(key_t* key, size_t* size, int* shmid, int flags);
+sem_t* initShmSemaphore(key_t* key, size_t* size, int* shmid, int flags);
 void* initSharedMemory(key_t* key, size_t* size, int* shmid, int flags);
 
 //Cleanup functions

@@ -20,9 +20,6 @@ int main(int arg, char* argv[]) {
     sigaction(SIGINT, &ossSigAction, 0);
     sigaction(SIGALRM, &ossSigAction, 0);
 
-    //Init semaphore
-    sem_t *sem = sem_open(SEM_NAME, O_CREAT, 0644, 1);
-
     pid = fork();
     if(pid == 0) {
         execl("./usr", "usr",  (char*) NULL);

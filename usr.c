@@ -14,9 +14,6 @@ int main(int arg, char* argv[]) {
     usrInitSignalHandler();
     sigaction(SIGTERM, &usrSigAction, 0);
 
-    //Get exising named semaphore.
-    sem_t *sem = sem_open(SEM_NAME, 0);
-
     printf("child execd\n");
 
     while(1) {
