@@ -19,6 +19,7 @@
 #include <semaphore.h>
 #include <signal.h>
 #include <time.h>
+#include <fcntl.h>
 
 //Keys
 extern const key_t SHM_KEY_SEM;     
