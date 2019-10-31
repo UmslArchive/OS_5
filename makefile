@@ -5,16 +5,16 @@
 #=======================================================
 
 CC = gcc
-CFLAGS = -I. -g
-OBJECTS = shared.o
+CFLAGS = -I . -g
+OBJECTS = shared.o processManage.o resourceManage.o interrupts.o
 .SUFFIXES: .c .o
 
-all: oss usrPs
+all: oss usr
 
 oss: oss.o $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ oss.o $(OBJECTS) -lpthread
 
-usrPs: userPs.o $(OBJECTS)
+usrPs: user.o $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ userPs.o $(OBJECTS) -lpthread
 
 .c.o:
@@ -22,4 +22,4 @@ usrPs: userPs.o $(OBJECTS)
 
 .PHONY: clean
 clean:
-	rm -f *.o oss usrPs *.txt
+	rm -f *.o oss usr *.txt
