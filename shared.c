@@ -51,7 +51,7 @@ void* initSharedMemory(key_t* key, size_t* size, int* shmid, int flags) {
     *shmid = shmget(*key, *size, flags);
     if(*shmid < 0) {
         switch(*key) {
-            case SHM_KEY_CLOCK:
+            case (int)SHM_KEY_CLOCK:
             perror("ERROR:shmid failed(clock)");
             break;
         }
