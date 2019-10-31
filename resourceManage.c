@@ -5,7 +5,3 @@
 //=========================================================
 
 #include "resourceManage.h"
-
-void resourceManageFunction() {
-    printf("rmf\n");
-}

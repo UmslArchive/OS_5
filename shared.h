@@ -21,20 +21,34 @@
 #include <time.h>
 
 //Keys
-#define SHM_KEY_SEM         0x66666666
-#define SHM_KEY_PCB_ARRAY   0x77777777
-#define SHM_KEY_MSG         0x88888888
-#define SHM_KEY_CLOCK       0x99999999
+extern const key_t SHM_KEY_SEM;     
+extern const key_t SHM_KEY_CLOCK;
+
+//Semaphore name
+extern const char* SEM_NAME;
+
+//Shared memory IDs
+extern int shmSemID;
+extern int shmClockID;
+
+extern pid_t pid;
 
 //----------------------------------------
-
-typedef enum { RAN, READY, DISPATCHED } ProcessState;
 
 //Structs
 typedef struct clock_struct {
     unsigned int seconds;
     unsigned int nanoseconds;
 } Clock;
+
+//Shared mem init functions
+//sem_t* initShmSemaphore(key_t* key, size_t* size, int* shmid, int flags);
+void* initSharedMemory(key_t* key, size_t* size, int* shmid, int flags);
+
+//Cleanup functions
+void detachAll();
+void cleanupSharedMemory(int* shmid);
+void cleanupAll();
 
 //Shared memory struct utility function prototypes
 Clock* initClock();

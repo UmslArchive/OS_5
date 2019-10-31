@@ -5,7 +5,3 @@
 //=========================================================
 
 #include "processManage.h"
-
-void processManageFunction() {
-    printf("pmf\n");
-}

@@ -14,7 +14,16 @@ int main(int arg, char* argv[]) {
     usrInitSignalHandler();
     sigaction(SIGTERM, &usrSigAction, 0);
 
+    //Get exising named semaphore.
+    sem_t *sem = sem_open(SEM_NAME, 1);
+
+    printf("child execd\n");
+
     while(1) {
+
+        sem_wait(sem);
+        printf("child hello\n");
+        sem_post(sem);
 
         //Check if a signal was received
         if(usrSignalReceivedFlag == 1)
