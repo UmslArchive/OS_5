@@ -40,6 +40,7 @@ int main(int arg, char* argv[]) {
     }
 
     //Cleanup
+    sem_close(sem);
     free(activeProccesses);
 
 }

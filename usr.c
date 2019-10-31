@@ -29,5 +29,7 @@ int main(int arg, char* argv[]) {
         if(usrSignalReceivedFlag == 1)
             break;
     }
+
+    sem_close(sem);
     
 }
