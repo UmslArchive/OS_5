@@ -7,6 +7,7 @@
 #include "resourceManage.h"
 #include "processManage.h"
 #include "interrupts.h"
+#include "shared.h"
 
 int main(int arg, char* argv[]) {
 
@@ -14,9 +15,7 @@ int main(int arg, char* argv[]) {
     usrInitSignalHandler();
     sigaction(SIGTERM, &usrSigAction, 0);
 
-    printf("child execd\n");
-
-    sleep(5);
+    printf("child %d execd\n", getpid());
 
     /* while(1) {
 
@@ -30,5 +29,5 @@ int main(int arg, char* argv[]) {
     } */
 
     //sem_close(sem);
-    return 0;
+    return 50;
 }

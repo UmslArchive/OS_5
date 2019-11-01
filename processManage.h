@@ -23,9 +23,9 @@
 
 #define MAX_CHILD_PROCESSES 18
 
-extern pid_t pid;
+/* extern pid_t pid;
 extern int exitStatus;
-extern pid_t* activeProcesses;
+extern pid_t* activeProcesses; */
 
 //Initialization/deallocation
 int initOssProcessManager();

@@ -6,11 +6,12 @@
 
 #include "processManage.h"
 
-int pid = 0;
-int exitStatus = 0;
-pid_t* activeProccesses = NULL;
+static int pid = 0;
+static int exitStatus = 0;
+static pid_t* activeProccesses = NULL;
 
 //Static functions:
+
 static void addToActiveProcesses() {
     int i;
     if(activeProccesses != NULL && pid != 0) {
@@ -73,6 +74,7 @@ static int activeProcessArrayFull(){
 }
 
 //Initialization/deallocation:
+
 int initOssProcessManager() {
     int i;
     if(activeProccesses == NULL) {
@@ -102,7 +104,7 @@ int spawnProcess() {
 
     //Don't spawn process if array is full
     if(activeProcessArrayFull() == 1) {
-        fprintf(stderr, "Process array full--No fork\n");
+        //fprintf(stderr, "Process array full--No fork\n");
         return 0;
     }
 

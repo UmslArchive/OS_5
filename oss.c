@@ -7,6 +7,7 @@
 #include "resourceManage.h"
 #include "processManage.h"
 #include "interrupts.h"
+#include "shared.h"
 
 int main(int arg, char* argv[]) {
 
@@ -19,31 +20,18 @@ int main(int arg, char* argv[]) {
 
     initOssProcessManager();
 
-    int i;
-    for(i = 0; i < 20; ++i){
+    while(1) {
         spawnProcess();
-    }
 
-    waitWhileStillActiveProcesses();
-
-    sleep(1);
-    
-    spawnProcess();
-    waitWhileStillActiveProcesses();
-
-    /* while(1) {
         //Check if a signal was received
-        sem_wait(sem);
-        sleep(1);
-        printf("oss hello\n");
-        sem_post(sem);
-
         if(ossSignalReceivedFlag == 1)
             break;
-    } */
+    }
+
+    //Wait on remaining processes
+    waitWhileStillActiveProcesses();
 
     //Cleanup
-    //sem_close(sem);
     destroyProcessManager();
     
     
