@@ -8,24 +8,23 @@
 #include "processManage.h"
 #include "interrupts.h"
 
-#define MAX_CHILDREN 18
-
 int main(int arg, char* argv[]) {
 
-    //Array which stores PIDs of currently active processes
-    pid_t* activeProccesses = malloc(MAX_CHILDREN * sizeof(pid_t));
+    //Initializations:
 
     //Register signal handlers
     ossInitSignalHandler();
     sigaction(SIGINT, &ossSigAction, 0);
     sigaction(SIGALRM, &ossSigAction, 0);
 
-    pid = fork();
-    if(pid == 0) {
-        execl("./usr", "usr",  (char*) NULL);
-    }
+    initOssProcessManager();
 
-    while(1) {
+    spawnProcess();
+    spawnProcess();
+
+    waitWhileStillActiveProcesses();
+
+    /* while(1) {
         //Check if a signal was received
         sem_wait(sem);
         sleep(1);
@@ -34,10 +33,12 @@ int main(int arg, char* argv[]) {
 
         if(ossSignalReceivedFlag == 1)
             break;
-    }
+    } */
 
     //Cleanup
-    sem_close(sem);
-    free(activeProccesses);
+    //sem_close(sem);
+    destroyProcessManager();
+    
+    
 
 }

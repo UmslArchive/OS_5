@@ -16,7 +16,7 @@ int main(int arg, char* argv[]) {
 
     printf("child execd\n");
 
-    while(1) {
+    /* while(1) {
 
         sem_wait(sem);
         printf("child hello\n");
@@ -25,8 +25,8 @@ int main(int arg, char* argv[]) {
         //Check if a signal was received
         if(usrSignalReceivedFlag == 1)
             break;
-    }
+    } */
 
-    sem_close(sem);
-    
+    //sem_close(sem);
+    return 0;
 }

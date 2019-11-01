@@ -7,16 +7,35 @@
 #ifndef PROC_MAN_H
 #define PROC_MAN_H
 
-#include "shared.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
+#include <errno.h>
+#include <semaphore.h>
+#include <signal.h>
+#include <time.h>
+#include <fcntl.h>
+
+#define MAX_CHILD_PROCESSES 18
+
+extern pid_t pid;
+extern int exitStatus;
+extern pid_t* activeProcesses;
+
+//Initialization/deallocation
+int initOssProcessManager();
+int destroyProcessManager();
 
 //oss process management functions:
+int spawnProcess();
+int waitWhileStillActiveProcesses();
 
-//Function called by OSS. Spawns a child process and 
-//stores its pid into the active process array
-pid_t spawnProcess(int* activeProcesses);
-
-//usrPs process management functions
-void detach(int shmid);
+//usr process management functions
 
 
 #endif

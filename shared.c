@@ -14,8 +14,6 @@ const key_t SHM_KEY_CLOCK = 0x99999999;
 int shmSemID = 0;
 int shmClockID = 0;
 
-pid_t pid = 0;
-
 sem_t* initShmSemaphore(key_t* key, size_t* size, int* shmid, int flags) {
     //Allocate shared memory and get an id
     *shmid = shmget(*key, *size, flags);
