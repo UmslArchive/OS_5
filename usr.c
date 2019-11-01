@@ -14,20 +14,24 @@ int main(int arg, char* argv[]) {
     //Register signal handler
     usrInitSignalHandler();
     sigaction(SIGTERM, &usrSigAction, 0);
+    sigaction(SIGINT, &usrSigAction, 0);
 
     printf("child %d execd\n", getpid());
 
-    /* while(1) {
-
-        sem_wait(sem);
-        printf("child hello\n");
-        sem_post(sem);
+    int count = 0;
+    while(1) {
+        if(count > 1000)
+            break;
 
         //Check if a signal was received
         if(usrSignalReceivedFlag == 1)
             break;
-    } */
 
-    //sem_close(sem);
+        ++count;
+    }
+
+    sleep(1);
+
+    fprintf(stderr, "DEATH %d\n", getpid());
     return 50;
 }

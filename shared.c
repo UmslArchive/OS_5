@@ -81,6 +81,8 @@ void cleanupAll() {
         cleanupSharedMemory(&shmClockID);
 }
 
+//Clock functions:
+
 void advanceClock(Clock* mainClock, unsigned int sec, unsigned int nanosec) {
     //Subtract seconds off of nanoseconds if >= 1,000,000,000 
     while(nanosec >= 1000000000) {
@@ -116,5 +118,14 @@ void printClock(Clock* clock) {
 }
 
 void timeDifference(Clock* subtractFrom, Clock* subtractAmount) {
+    
+}
+
+//Msg functions
+Msg readMsg(Msg* msg) {
+
+}
+
+void setMsg(Msg* msg, pid_t pid, pstate_t state) {
     
 }

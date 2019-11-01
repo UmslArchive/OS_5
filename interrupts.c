@@ -17,11 +17,11 @@ struct sigaction usrSigAction;
 void ossSignalHandler(int signal) {
     switch(signal) {
         case SIGINT:
-            fprintf(stderr, "\nOSS caught SIGINT signal\n");
+            fprintf(stderr, "OSS caught SIGINT signal\n");
             break;
 
         case SIGALRM:
-            fprintf(stderr, "\nOSS caught SIGALRM signal\n");
+            fprintf(stderr, "OSS caught SIGALRM signal\n");
             break;
     }    
     ossSignalReceivedFlag = 1;
@@ -30,11 +30,10 @@ void ossSignalHandler(int signal) {
 void usrSignalHandler(int signal) {
     switch(signal) {
         case SIGTERM:
-            fprintf(stderr, "\nUSR caught SIGTERM signal\n");
-            fprintf(stderr, "Child PID %d detaching from shared memory...\n", getpid());
+            fprintf(stderr, "USR %d caught SIGTERM signal\n", getpid());
+            usrSignalReceivedFlag = 1;
             break;
-    }    
-    usrSignalReceivedFlag = 1;
+    } 
 }
 
 void ossInitSignalHandler() {

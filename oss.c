@@ -18,18 +18,28 @@ int main(int arg, char* argv[]) {
     sigaction(SIGINT, &ossSigAction, 0);
     sigaction(SIGALRM, &ossSigAction, 0);
 
+    alarm(5);
+
     initOssProcessManager();
 
     while(1) {
         spawnProcess();
 
+        //Wait on dead child if there is one
+        waitNoBlock();
+
         //Check if a signal was received
-        if(ossSignalReceivedFlag == 1)
+        if(ossSignalReceivedFlag == 1) {
+            killChildren();
             break;
+        }
     }
 
+    sleep(1);
+
     //Wait on remaining processes
-    waitWhileStillActiveProcesses();
+    while(areActiveProcesses() == 1)
+        waitNoBlock();
 
     //Cleanup
     destroyProcessManager();

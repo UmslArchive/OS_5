@@ -48,7 +48,7 @@ static void removeFromActiveProccesses(pid_t process) {
     return;
 }
 
-static int areActiveProccesses() {
+int areActiveProcesses() {
     int i;
     if(activeProccesses != NULL) {
         for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
@@ -71,6 +71,17 @@ static int activeProcessArrayFull(){
     }
 
     return -1;
+}
+
+static void printActiveProcessArray() {
+    int i;
+    if(activeProccesses != NULL) {
+        fprintf(stderr, "AP: ");
+        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+            fprintf(stderr, "%.5d ", activeProccesses[i]);
+        }
+        fprintf(stderr, "\n");
+    }
 }
 
 //Initialization/deallocation:
@@ -125,13 +136,35 @@ int spawnProcess() {
     return 0;
 }
 
-int waitWhileStillActiveProcesses() {
-    while(areActiveProccesses()) {
+int waitNoBlock() {
+    /* while(areActiveProccesses()) {
         pid = wait(&exitStatus);
 
         fprintf(stderr, "PID %d exited w/ status %d\n", pid, WEXITSTATUS(exitStatus));
         removeFromActiveProccesses(pid);
         pid = 0;
+    } */
+
+    while(pid = waitpid(-1, &exitStatus, WNOHANG)) {
+        
+        if((pid == -1) && (errno != EINTR))
+            break;
+        else {
+            fprintf(stderr, "PID %d exited w/ status %d\n", pid, WEXITSTATUS(exitStatus));
+            removeFromActiveProccesses(pid);
+            //printActiveProcessArray();
+        }
+    }
+}
+
+void killChildren() {
+    int i;
+    if(activeProccesses != NULL) {
+        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+            if(activeProccesses[i] > 0) {
+                kill(activeProccesses[i], SIGTERM);
+            }
+        }
     }
 }
 
