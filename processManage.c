@@ -51,12 +51,25 @@ static int areActiveProccesses() {
     int i;
     if(activeProccesses != NULL) {
         for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-        if(activeProccesses[i] > 0)
-            return 1;
+            if(activeProccesses[i] > 0)
+                return 1;
         }
     }
 
     return 0;
+}
+
+static int activeProcessArrayFull(){
+    int i;
+    if(activeProccesses != NULL) {
+        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+            if(activeProccesses[i] == 0)
+                return 0;
+        }
+        return 1;
+    }
+
+    return -1;
 }
 
 //Initialization/deallocation:
@@ -86,6 +99,13 @@ int destroyProcessManager() {
 //oss functions:
 
 int spawnProcess() {
+
+    //Don't spawn process if array is full
+    if(activeProcessArrayFull() == 1) {
+        fprintf(stderr, "Process array full--No fork\n");
+        return 0;
+    }
+
     pid = fork();
 
     //Handle fork error
@@ -100,6 +120,7 @@ int spawnProcess() {
     }
 
     addToActiveProcesses();
+    return 0;
 }
 
 int waitWhileStillActiveProcesses() {
