@@ -19,9 +19,16 @@ int main(int arg, char* argv[]) {
 
     initOssProcessManager();
 
-    spawnProcess();
-    spawnProcess();
+    int i;
+    for(i = 0; i < 20; ++i){
+        spawnProcess();
+    }
 
+    waitWhileStillActiveProcesses();
+
+    sleep(1);
+    
+    spawnProcess();
     waitWhileStillActiveProcesses();
 
     /* while(1) {

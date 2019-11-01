@@ -16,6 +16,8 @@ int main(int arg, char* argv[]) {
 
     printf("child execd\n");
 
+    sleep(5);
+
     /* while(1) {
 
         sem_wait(sem);
