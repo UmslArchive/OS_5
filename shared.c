@@ -120,12 +120,3 @@ void printClock(Clock* clock) {
 void timeDifference(Clock* subtractFrom, Clock* subtractAmount) {
     
 }
-
-//Msg functions
-Msg readMsg(Msg* msg) {
-
-}
-
-void setMsg(Msg* msg, pid_t pid, pstate_t state) {
-    
-}

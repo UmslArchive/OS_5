@@ -35,8 +35,6 @@ int main(int arg, char* argv[]) {
         }
     }
 
-    sleep(1);
-
     //Wait on remaining processes
     while(areActiveProcesses() == 1)
         waitNoBlock();

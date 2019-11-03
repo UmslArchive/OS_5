@@ -36,17 +36,11 @@ extern pid_t pid;
 
 //----------------------------------------
 
-typedef enum Process_State { RUNNING, WAITING, DEAD } pstate_t;
 //Structs
 typedef struct clock_struct {
     unsigned int seconds;
     unsigned int nanoseconds;
 } Clock;
-
-typedef struct msg_struct {
-    pid_t pid;
-    pstate_t state;
-} Msg;
 
 //Shared mem init functions
 sem_t* initShmSemaphore(key_t* key, size_t* size, int* shmid, int flags);
@@ -62,9 +56,5 @@ Clock* initClock();
 void advanceClock(Clock* mainClock, unsigned int sec, unsigned int nanosec);
 void timeDifference(Clock* subtractFrom, Clock* subtractAmount);
 void printClock(Clock* clock);
-
-//Msg Funtions
-Msg readMsg(Msg* msg);
-void setMsg(Msg* msg, pid_t pid, pstate_t state);
 
 #endif
