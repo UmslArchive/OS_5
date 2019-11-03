@@ -18,7 +18,7 @@ int main(int arg, char* argv[]) {
     sigaction(SIGINT, &ossSigAction, 0);
     sigaction(SIGALRM, &ossSigAction, 0);
 
-    alarm(5);
+    //alarm(5);
 
     initOssProcessManager();
 
@@ -26,9 +26,16 @@ int main(int arg, char* argv[]) {
     sem_t* shmSemPtr = initShmSemaphore(SHM_KEY_SEM, shmSemSize, &shmSemID, SHM_OSS_FLAGS);
     Clock* shmClockPtr = (Clock*)initSharedMemory(SHM_KEY_CLOCK, shmClockSize, &shmClockID, SHM_OSS_FLAGS);
     initClock(shmClockPtr);
-
+    int count = 0;
     while(1) {
         spawnProcess();
+
+        sleep(1);
+        //Critical section
+        sem_wait(shmSemPtr);
+        printf("oss hello #%d\n", count++);
+        sem_post(shmSemPtr);
+
 
         //Wait on dead child if there is one
         waitNoBlock();
