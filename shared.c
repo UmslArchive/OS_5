@@ -14,9 +14,16 @@ const key_t SHM_KEY_CLOCK = 0x99999999;
 int shmSemID = 0;
 int shmClockID = 0;
 
-sem_t* initShmSemaphore(key_t* key, size_t* size, int* shmid, int flags) {
+//Sizes
+const size_t shmSemSize = sizeof(sem_t);
+const size_t shmClockSize = sizeof(Clock);
+
+const int SHM_OSS_FLAGS = IPC_CREAT | IPC_EXCL | 0777;
+const int SHM_USR_FLAGS = 0777;
+
+sem_t* initShmSemaphore(const key_t key, const size_t size, int* shmid, int flags) {
     //Allocate shared memory and get an id
-    *shmid = shmget(*key, *size, flags);
+    *shmid = shmget(key, size, flags);
     if(*shmid < 0) {
         perror("ERROR:shmget failed(semaphore)");
         cleanupAll();
@@ -32,7 +39,7 @@ sem_t* initShmSemaphore(key_t* key, size_t* size, int* shmid, int flags) {
     }
 
     //Init semaphore
-    if(sem_init(temp, 1, 1) == -1) {
+    if(sem_init((sem_t*)temp, 1, 1) == -1) {
         perror("ERROR:sem_init failed");
         cleanupAll();
         exit(1);
@@ -41,18 +48,28 @@ sem_t* initShmSemaphore(key_t* key, size_t* size, int* shmid, int flags) {
     return (sem_t*)temp;
 }
 
-void* initSharedMemory(key_t* key, size_t* size, int* shmid, int flags) {
+void* initSharedMemory(const key_t key, const size_t size, int* shmid, int flags) {
     //Allocate shared memory and get an id
-    *shmid = shmget(*key, *size, flags);
+    *shmid = shmget(key, size, flags);
     if(*shmid < 0) {
-        if(*key == SHM_KEY_CLOCK) {
+        if(key == SHM_KEY_CLOCK) {
             perror("ERROR:shmid failed(clock)");
         }
         cleanupAll();
         exit(10);
     }
 
-    return NULL;
+    //Assign pointer
+    void* temp = shmat(*shmid, NULL, 0);
+    if(temp == (void*) -1) {
+        if(key == SHM_KEY_CLOCK) { 
+            perror("ERROR:oss:shmat failed(clock)");
+        }
+        cleanupAll();
+        exit(20);
+    }
+
+    return temp;
 }
 
 void detachAll() {
@@ -102,12 +119,9 @@ void advanceClock(Clock* mainClock, unsigned int sec, unsigned int nanosec) {
     mainClock->seconds += sec;
 }
 
-Clock* initClock(){
-    Clock* newClock = malloc(sizeof(Clock));
-    newClock->nanoseconds = 0;
-    newClock->seconds = 0;
-
-    return newClock;
+void initClock(Clock* clock){
+    clock->seconds = 0;
+    clock->nanoseconds = 0;
 }
 
 void printClock(Clock* clock) {

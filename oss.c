@@ -22,6 +22,11 @@ int main(int arg, char* argv[]) {
 
     initOssProcessManager();
 
+    //Init shared memory
+    sem_t* shmSemPtr = initShmSemaphore(SHM_KEY_SEM, shmSemSize, &shmSemID, SHM_OSS_FLAGS);
+    Clock* shmClockPtr = (Clock*)initSharedMemory(SHM_KEY_CLOCK, shmClockSize, &shmClockID, SHM_OSS_FLAGS);
+    initClock(shmClockPtr);
+
     while(1) {
         spawnProcess();
 
@@ -41,6 +46,7 @@ int main(int arg, char* argv[]) {
 
     //Cleanup
     destroyProcessManager();
+    cleanupAll();
     
     
 

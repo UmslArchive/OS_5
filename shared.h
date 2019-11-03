@@ -25,12 +25,17 @@
 extern const key_t SHM_KEY_SEM;     
 extern const key_t SHM_KEY_CLOCK;
 
-//Semaphore name
-extern const char* SEM_NAME;
-
-//Shared memory IDs
+//IDs
 extern int shmSemID;
 extern int shmClockID;
+
+//Sizes
+extern const size_t shmSemSize;
+extern const size_t shmClockSize;
+
+//Oss Flags
+extern const int SHM_OSS_FLAGS;
+extern const int SHM_USR_FLAGS;
 
 extern pid_t pid;
 
@@ -43,8 +48,8 @@ typedef struct clock_struct {
 } Clock;
 
 //Shared mem init functions
-sem_t* initShmSemaphore(key_t* key, size_t* size, int* shmid, int flags);
-void* initSharedMemory(key_t* key, size_t* size, int* shmid, int flags);
+sem_t* initShmSemaphore(const key_t key, const size_t size, int* shmid, int flags);
+void* initSharedMemory(const key_t key, const size_t size, int* shmid, int flags);
 
 //Cleanup functions
 void detachAll();
@@ -52,7 +57,7 @@ void cleanupSharedMemory(int* shmid);
 void cleanupAll();
 
 //Clock functions
-Clock* initClock();
+void initClock(Clock* clock);
 void advanceClock(Clock* mainClock, unsigned int sec, unsigned int nanosec);
 void timeDifference(Clock* subtractFrom, Clock* subtractAmount);
 void printClock(Clock* clock);
