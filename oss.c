@@ -4,12 +4,13 @@
 //Date:     11/5/19
 //=========================================================
 
-#include "resourceManage.h"
 #include "processManage.h"
 #include "interrupts.h"
-#include "shared.h"
+#include "resourceManage.h"
 
 int main(int arg, char* argv[]) {
+
+    int semVal = -55;
 
     //Initializations:
 
@@ -18,28 +19,42 @@ int main(int arg, char* argv[]) {
     sigaction(SIGINT, &ossSigAction, 0);
     sigaction(SIGALRM, &ossSigAction, 0);
 
-    alarm(50);
+    //alarm(10);
 
     initOssProcessManager();
 
-    //Init shared memory
+    //Init semaphore
     sem_t* shmSemPtr = initShmSemaphore(SHM_KEY_SEM, shmSemSize, &shmSemID, SHM_OSS_FLAGS);
+    if(sem_init(shmSemPtr, 1, 1) == -1) {
+        perror("ERROR:sem_init failed");
+        cleanupAll();
+        exit(1);
+    }
+
+    //Init shared memory
     Clock* shmClockPtr = (Clock*)initSharedMemory(SHM_KEY_CLOCK, shmClockSize, &shmClockID, SHM_OSS_FLAGS);
     initClock(shmClockPtr);
+
+    shmClockPtr->nanoseconds = 5;
+
+    res_desc_t* shmResourceDescPtr = (res_desc_t*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_OSS_FLAGS);
+    
+    (shmResourceDescPtr + 1)->currentAllocs[1000] = 5;
     
     int count = 0;
     while(1) {
         spawnProcess();
 
-        sleep(1);
+        sem_getvalue(shmSemPtr, &semVal);
+
         //Critical section
         sem_wait(shmSemPtr);
-        printf("oss hello #%d\n", count++);
-        sem_post(shmSemPtr);
-
+        printActiveProcessArray();
+        printf("\t\t\t\t\toss hello #%d\n", count++);
 
         //Wait on dead child if there is one
         waitNoBlock();
+        sem_post(shmSemPtr);
 
         //Check if a signal was received
         if(ossSignalReceivedFlag == 1) {

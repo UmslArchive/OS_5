@@ -37,6 +37,8 @@ int waitNoBlock();
 int areActiveProcesses();
 void killChildren();
 
+void printActiveProcessArray();
+
 //usr process management functions
 
 

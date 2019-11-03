@@ -4,10 +4,11 @@
 //Date:     11/5/19
 //=========================================================
 
-#include "resourceManage.h"
 #include "processManage.h"
 #include "interrupts.h"
-#include "shared.h"
+#include "resourceManage.h"
+
+typedef enum process_state { AWAKE, ASLEEP } pstate_t;
 
 int main(int arg, char* argv[]) {
 
@@ -22,10 +23,9 @@ int main(int arg, char* argv[]) {
     
     int count = 0;
     while(1) {
-        sleep(1);
         //Critical section
         sem_wait(shmSemPtr);
-        printf("usr %d hello #%d\n", getpid(), count++);
+            printf("usr %d hello #%d\n", getpid(), count++);
         sem_post(shmSemPtr);
 
         if(count > 20)
@@ -37,7 +37,6 @@ int main(int arg, char* argv[]) {
     }
 
     detachAll();
-
-    fprintf(stderr, "DEATH %d\n", getpid());
+    //fprintf(stderr, "DEATH %d\n", getpid());
     return 50;
 }

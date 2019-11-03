@@ -6,17 +6,22 @@
 
 #include "shared.h"
 
+#define MAX_RESOURCES 20
+
 //Keys
 const key_t SHM_KEY_SEM = 0x66666666;   
 const key_t SHM_KEY_CLOCK = 0x99999999;
+const key_t SHM_KEY_RESOURCE = 0x77777777;
 
 //IDs
 int shmSemID = 0;
 int shmClockID = 0;
+int shmResourceDescID = 0;
 
 //Sizes
 const size_t shmSemSize = sizeof(sem_t);
 const size_t shmClockSize = sizeof(Clock);
+const size_t shmResourceDescSize = MAX_RESOURCES * sizeof(res_desc_t);
 
 const int SHM_OSS_FLAGS = IPC_CREAT | IPC_EXCL | 0777;
 const int SHM_USR_FLAGS = 0777;
@@ -38,12 +43,12 @@ sem_t* initShmSemaphore(const key_t key, const size_t size, int* shmid, int flag
         exit(1);
     }
 
-    //Init semaphore
+    /* //Init semaphore
     if(sem_init((sem_t*)temp, 1, 1) == -1) {
         perror("ERROR:sem_init failed");
         cleanupAll();
         exit(1);
-    }
+    } */
 
     return (sem_t*)temp;
 }
@@ -78,7 +83,7 @@ void detachAll() {
     if(shmSemID > 0)
         shmdt(&shmSemID);
 
-    fprintf(stderr, "Child PID %d detached\n", getpid());
+    //fprintf(stderr, "Child PID %d detached\n", getpid());
 }
 
 void cleanupSharedMemory(int* shmid) {
@@ -96,6 +101,9 @@ void cleanupAll() {
 
     if(shmClockID > 0)   
         cleanupSharedMemory(&shmClockID);
+
+    if(shmResourceDescID > 0)
+        cleanupSharedMemory(&shmResourceDescID);
 }
 
 //Clock functions:

@@ -73,13 +73,18 @@ static int activeProcessArrayFull(){
     return -1;
 }
 
-static void printActiveProcessArray() {
+void printActiveProcessArray() {
     int i;
     if(activeProccesses != NULL) {
-        fprintf(stderr, "AP: ");
+        fprintf(stderr, "------------------------------------------ACTIVE-PROCESSES-------------------------------------------------\n");
+        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+            fprintf(stderr, "%.2d    ",i);
+        }
+        fprintf(stderr, "\n");
         for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
             fprintf(stderr, "%.5d ", activeProccesses[i]);
         }
+        fprintf(stderr, "\n-----------------------------------------------------------------------------------------------------------\n");
         fprintf(stderr, "\n");
     }
 }
@@ -112,10 +117,9 @@ int destroyProcessManager() {
 //oss functions:
 
 int spawnProcess() {
-
     //Don't spawn process if array is full
     if(activeProcessArrayFull() == 1) {
-        //fprintf(stderr, "Process array full--No fork\n");
+        fprintf(stderr, "\t\t\tProcess array full--No fork\n");
         return 0;
     }
 
@@ -137,22 +141,13 @@ int spawnProcess() {
 }
 
 int waitNoBlock() {
-    /* while(areActiveProccesses()) {
-        pid = wait(&exitStatus);
-
-        fprintf(stderr, "PID %d exited w/ status %d\n", pid, WEXITSTATUS(exitStatus));
-        removeFromActiveProccesses(pid);
-        pid = 0;
-    } */
-
     while(pid = waitpid(-1, &exitStatus, WNOHANG)) {
-        
         if((pid == -1) && (errno != EINTR))
             break;
         else {
-            fprintf(stderr, "PID %d exited w/ status %d\n", pid, WEXITSTATUS(exitStatus));
+            //fprintf(stderr, "PID %d exited w/ status %d\n", pid, WEXITSTATUS(exitStatus));
             removeFromActiveProccesses(pid);
-            //printActiveProcessArray();
+            printActiveProcessArray();
         }
     }
 }

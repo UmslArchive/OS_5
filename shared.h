@@ -24,14 +24,17 @@
 //Keys
 extern const key_t SHM_KEY_SEM;     
 extern const key_t SHM_KEY_CLOCK;
+extern const key_t SHM_KEY_RESOURCE;
 
 //IDs
 extern int shmSemID;
 extern int shmClockID;
+extern int shmResourceDescID;
 
 //Sizes
 extern const size_t shmSemSize;
 extern const size_t shmClockSize;
+extern const size_t shmResourceDescSize;
 
 //Oss Flags
 extern const int SHM_OSS_FLAGS;
@@ -46,6 +49,16 @@ typedef struct clock_struct {
     unsigned int seconds;
     unsigned int nanoseconds;
 } Clock;
+
+typedef struct res_desc_struct {
+    unsigned int maxAllocs;
+    pid_t currentAllocs[10];
+} res_desc_t;
+
+typedef struct request_struct {
+    unsigned int resource;
+    unsigned int amount;
+} Request;
 
 //Shared mem init functions
 sem_t* initShmSemaphore(const key_t key, const size_t size, int* shmid, int flags);
