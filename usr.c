@@ -28,12 +28,15 @@ int main(int arg, char* argv[]) {
         printf("usr %d hello #%d\n", getpid(), count++);
         sem_post(shmSemPtr);
 
+        if(count > 20)
+            break;
+
         //Check if a signal was received
         if(usrSignalReceivedFlag == 1)
             break;
     }
 
-    sleep(1);
+    detachAll();
 
     fprintf(stderr, "DEATH %d\n", getpid());
     return 50;
