@@ -2,3 +2,5 @@
 oss
 usr
 removeShared.sh
+.vscode
+.vscode/*
