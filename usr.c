@@ -12,6 +12,10 @@ typedef enum process_state { AWAKE, ASLEEP } pstate_t;
 
 int main(int arg, char* argv[]) {
 
+    //Initializations:
+
+    srand(time(NULL));
+
     //Register signal handler
     usrInitSignalHandler();
     sigaction(SIGTERM, &usrSigAction, 0);

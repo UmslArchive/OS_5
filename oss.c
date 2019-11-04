@@ -11,6 +11,8 @@
 int main(int arg, char* argv[]) {
 
     //Initializations:
+    
+    srand(time(NULL));
 
     //Register signal handlers
     ossInitSignalHandler();
@@ -36,6 +38,9 @@ int main(int arg, char* argv[]) {
 
     //Init shared memory values
     initClock(shmClockPtr);
+
+    //Generate first random process spawn time
+    unsigned int spawnTime = rand() % 499999999 + 1;
     
     while(1) {
 

@@ -9,8 +9,8 @@
 
 #include "shared.h"
 
-//oss process management functions
+//oss process resource functions
 
-//usrPs process management functions
+//usrPs process resource functions
 
 #endif
