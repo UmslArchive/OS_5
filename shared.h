@@ -85,4 +85,6 @@ void advanceClock(Clock* mainClock, unsigned int sec, unsigned int nanosec);
 void timeDifference(Clock* subtractFrom, Clock* subtractAmount);
 void printClock(Clock* clock);
 
+
+
 #endif

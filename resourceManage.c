@@ -5,3 +5,5 @@
 //=========================================================
 
 #include "resourceManage.h"
+
+Request* currentRequest = NULL;

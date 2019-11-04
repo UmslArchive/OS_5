@@ -9,7 +9,15 @@
 
 #include "shared.h"
 
+typedef struct system_state_struct {
+    //from book
+} SystemState;
+
 //oss process resource functions
+void processRequests(Request* reqArray);
+void isSafeState();
+void approveRequest(Request* reqArray);
+
 
 //usrPs process resource functions
 
