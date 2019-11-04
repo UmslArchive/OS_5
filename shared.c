@@ -152,6 +152,31 @@ void printClock(Clock* clock) {
         fprintf(stderr, "Clock is null\n");
 }
 
-void timeDifference(Clock* subtractFrom, Clock* subtractAmount) {
-    
+Clock timeDifference(Clock* minuend, Clock* subtrahend) {
+    int secondsDifference = 0;
+    int nanoDifference = 0;
+
+    secondsDifference = minuend->seconds - subtrahend->seconds;
+    nanoDifference = minuend->nanoseconds - subtrahend->nanoseconds;
+
+    if(nanoDifference < 0) {
+        --secondsDifference;
+        nanoDifference = 1000000000 + nanoDifference;
+    }
+
+    Clock rtrnClock;
+    rtrnClock.nanoseconds = nanoDifference;
+    rtrnClock.seconds = secondsDifference;
+
+    return rtrnClock;
+}
+
+int checkIfPassedTime(Clock* mainClock, Clock* timeLimit) {
+    if(mainClock->seconds > timeLimit->seconds)
+        return 1;
+
+    if(mainClock->seconds == timeLimit->seconds && mainClock->nanoseconds >= timeLimit->nanoseconds)
+        return 1;
+
+    return 0;
 }

@@ -82,8 +82,9 @@ void cleanupAll();
 //Clock functions
 void initClock(Clock* clock);
 void advanceClock(Clock* mainClock, unsigned int sec, unsigned int nanosec);
-void timeDifference(Clock* subtractFrom, Clock* subtractAmount);
+Clock timeDifference(Clock* subtractFrom, Clock* subtractAmount);
 void printClock(Clock* clock);
+int checkIfPassedTime(Clock* mainClock, Clock* timeLimit);
 
 
 

@@ -19,8 +19,6 @@ int main(int arg, char* argv[]) {
     sigaction(SIGINT, &ossSigAction, 0);
     sigaction(SIGALRM, &ossSigAction, 0);
 
-    //alarm(10);
-
     initOssProcessManager();
 
     //Init semaphore
@@ -45,6 +43,8 @@ int main(int arg, char* argv[]) {
     while(1) {
 
         spawnProcess();
+
+        
 
         //Critical section
         sem_wait(shmSemPtr);

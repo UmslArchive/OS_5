@@ -140,8 +140,8 @@ int spawnProcess() {
     return 0;
 }
 
-int waitNoBlock() {
-    while(pid = waitpid(-1, &exitStatus, WNOHANG)) {
+void waitNoBlock() {
+    while((pid = waitpid(-1, &exitStatus, WNOHANG))) {
         if((pid == -1) && (errno != EINTR))
             break;
         else {
