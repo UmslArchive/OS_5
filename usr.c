@@ -26,11 +26,25 @@ int main(int arg, char* argv[]) {
     Clock* shmClockPtr = (Clock*)initSharedMemory(SHM_KEY_CLOCK, shmClockSize, &shmClockID, SHM_USR_FLAGS);
     ResourceDescriptor* shmResourceDescPtr = (ResourceDescriptor*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_USR_FLAGS);
     Request* shmRequestPtr = (Request*)initSharedMemory(SHM_KEY_REQUEST, shmRequestSize, &shmRequestID, SHM_USR_FLAGS);
+
+    //Generate first time limit
+    Clock timeLimit;
+    timeLimit.nanoseconds = rand() % 499999999 + 1;
+    timeLimit.seconds = 0;
     
     while(1) {
         //Critical section
-        sem_wait(shmSemPtr);
-        sem_post(shmSemPtr);
+
+        if(checkIfPassedTime(shmClockPtr, &timeLimit) == 1) {
+            sem_wait(shmSemPtr);
+                //Set new time limit
+                setClock(&timeLimit, shmClockPtr->seconds, shmClockPtr->nanoseconds + rand() % 499999999 + 1);
+                advanceClock(shmClockPtr, 0, 50);
+                printf("USR : ");
+                printClock(shmClockPtr);
+            sem_post(shmSemPtr);
+        }
+        
 
         //Check if a signal was received
         if(usrSignalReceivedFlag == 1)

@@ -121,6 +121,17 @@ void cleanupAll() {
 
 //Clock functions:
 
+void setClock(Clock* clock, unsigned int sec, unsigned int nanosec) {
+    if(nanosec >= 1000000000) {
+        fprintf(stderr, "ERROR: Invalid clock set parameters\n");
+        return;
+    }
+
+    clock->seconds = sec;
+    clock->nanoseconds = nanosec;
+    return;
+}
+
 void advanceClock(Clock* mainClock, unsigned int sec, unsigned int nanosec) {
     //Subtract seconds off of nanoseconds if >= 1,000,000,000 
     while(nanosec >= 1000000000) {

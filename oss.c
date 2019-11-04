@@ -48,6 +48,9 @@ int main(int arg, char* argv[]) {
 
         //Critical section
         sem_wait(shmSemPtr);
+            advanceClock(shmClockPtr, 0, 50);
+            printf("OSS : ");
+            printClock(shmClockPtr);
         sem_post(shmSemPtr);
 
         //Wait on dead child if there is one

@@ -104,11 +104,33 @@ void testTimeHasPassed() {
     printf("-----\n");
 }
 
+void testClockSet() {
+    Clock clock;
+    initClock(&clock);
+
+    //Test label
+    printf("Set clock tests:\n");
+
+    //nanosec to high test
+
+    printf("Attempting to set clock to 1:1000000000\n");
+    setClock(&clock, 1, 1000000000);
+    printClock(&clock);
+
+    //Edge case
+    printf("\nAttempting to set clock to 17:999999999\n");
+    setClock(&clock, 17, 999999999);
+    printClock(&clock);
+
+    printf("-----\n");
+}
+
 int main() {
     printf("\nRUNNING TESTS:\n-----\n");
 
     testTimeDifference();
     testTimeHasPassed();
+    testClockSet();
 
     return 0;
 }

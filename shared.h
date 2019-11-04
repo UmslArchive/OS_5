@@ -81,6 +81,7 @@ void cleanupAll();
 
 //Clock functions
 void initClock(Clock* clock);
+void setClock(Clock* clock, unsigned int sec, unsigned int nanosec);
 void advanceClock(Clock* mainClock, unsigned int sec, unsigned int nanosec);
 Clock timeDifference(Clock* subtractFrom, Clock* subtractAmount);
 void printClock(Clock* clock);
