@@ -64,6 +64,7 @@ typedef struct res_desc_struct {
 
 //1 for each process
 typedef struct request_struct {
+    unsigned int maxClaims;
     unsigned int resource;
     unsigned int amount;
     Clock timestamp;
