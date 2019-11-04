@@ -17,19 +17,16 @@ int main(int arg, char* argv[]) {
     sigaction(SIGTERM, &usrSigAction, 0);
     sigaction(SIGINT, &usrSigAction, 0);
 
-    //Init shared memory
+    //Init shared memory pointers
     sem_t* shmSemPtr = initShmSemaphore(SHM_KEY_SEM, shmSemSize, &shmSemID, SHM_USR_FLAGS);
     Clock* shmClockPtr = (Clock*)initSharedMemory(SHM_KEY_CLOCK, shmClockSize, &shmClockID, SHM_USR_FLAGS);
+    ResourceDescriptor* shmResourceDescPtr = (ResourceDescriptor*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_USR_FLAGS);
+    Request* shmRequestPtr = (Request*)initSharedMemory(SHM_KEY_REQUEST, shmRequestSize, &shmRequestID, SHM_USR_FLAGS);
     
-    int count = 0;
     while(1) {
         //Critical section
         sem_wait(shmSemPtr);
-            printf("usr %d hello #%d\n", getpid(), count++);
         sem_post(shmSemPtr);
-
-        if(count > 20)
-            break;
 
         //Check if a signal was received
         if(usrSignalReceivedFlag == 1)

@@ -10,8 +10,6 @@
 
 int main(int arg, char* argv[]) {
 
-    int semVal = -55;
-
     //Initializations:
 
     //Register signal handlers
@@ -31,30 +29,24 @@ int main(int arg, char* argv[]) {
         exit(1);
     }
 
-    //Init shared memory
+    //Init shared memory pointers
     Clock* shmClockPtr = (Clock*)initSharedMemory(SHM_KEY_CLOCK, shmClockSize, &shmClockID, SHM_OSS_FLAGS);
+    ResourceDescriptor* shmResourceDescPtr = (ResourceDescriptor*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_OSS_FLAGS);
+    Request* shmRequestPtr = (Request*)initSharedMemory(SHM_KEY_REQUEST, shmRequestSize, &shmRequestID, SHM_OSS_FLAGS);
+
+    //Init shared memory values
     initClock(shmClockPtr);
-
-    shmClockPtr->nanoseconds = 5;
-
-    res_desc_t* shmResourceDescPtr = (res_desc_t*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_OSS_FLAGS);
     
-    (shmResourceDescPtr + 1)->currentAllocs[1000] = 5;
-    
-    int count = 0;
     while(1) {
-        spawnProcess();
 
-        sem_getvalue(shmSemPtr, &semVal);
+        spawnProcess();
 
         //Critical section
         sem_wait(shmSemPtr);
-        printActiveProcessArray();
-        printf("\t\t\t\t\toss hello #%d\n", count++);
+        sem_post(shmSemPtr);
 
         //Wait on dead child if there is one
         waitNoBlock();
-        sem_post(shmSemPtr);
 
         //Check if a signal was received
         if(ossSignalReceivedFlag == 1) {

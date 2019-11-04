@@ -21,20 +21,25 @@
 #include <time.h>
 #include <fcntl.h>
 
+#include "processManage.h"
+
 //Keys
 extern const key_t SHM_KEY_SEM;     
 extern const key_t SHM_KEY_CLOCK;
 extern const key_t SHM_KEY_RESOURCE;
+extern const key_t SHM_KEY_REQUEST;
 
 //IDs
 extern int shmSemID;
 extern int shmClockID;
 extern int shmResourceDescID;
+extern int shmRequestID;
 
 //Sizes
 extern const size_t shmSemSize;
 extern const size_t shmClockSize;
 extern const size_t shmResourceDescSize;
+extern const size_t shmRequestSize;
 
 //Oss Flags
 extern const int SHM_OSS_FLAGS;
@@ -50,14 +55,18 @@ typedef struct clock_struct {
     unsigned int nanoseconds;
 } Clock;
 
+//1 for each resource
 typedef struct res_desc_struct {
     unsigned int maxAllocs;
     pid_t currentAllocs[10];
-} res_desc_t;
+    int shareable;
+} ResourceDescriptor;
 
+//1 for each process
 typedef struct request_struct {
     unsigned int resource;
     unsigned int amount;
+    Clock timestamp;
 } Request;
 
 //Shared mem init functions

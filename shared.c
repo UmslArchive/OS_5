@@ -12,16 +12,21 @@
 const key_t SHM_KEY_SEM = 0x66666666;   
 const key_t SHM_KEY_CLOCK = 0x99999999;
 const key_t SHM_KEY_RESOURCE = 0x77777777;
+const key_t SHM_KEY_REQUEST = 0x88888888;
+
 
 //IDs
 int shmSemID = 0;
 int shmClockID = 0;
 int shmResourceDescID = 0;
+int shmRequestID = 0;
+
 
 //Sizes
 const size_t shmSemSize = sizeof(sem_t);
 const size_t shmClockSize = sizeof(Clock);
-const size_t shmResourceDescSize = MAX_RESOURCES * sizeof(res_desc_t);
+const size_t shmResourceDescSize = MAX_RESOURCES * sizeof(ResourceDescriptor);
+const size_t shmRequestSize = MAX_CHILD_PROCESSES * sizeof(Request);
 
 const int SHM_OSS_FLAGS = IPC_CREAT | IPC_EXCL | 0777;
 const int SHM_USR_FLAGS = 0777;
@@ -82,6 +87,11 @@ void detachAll() {
         shmdt(&shmClockID);
     if(shmSemID > 0)
         shmdt(&shmSemID);
+    if(shmRequestID > 0)
+        shmdt(&shmRequestID);
+    if(shmResourceDescID > 0)
+        shmdt(&shmResourceDescID);
+    
 
     //fprintf(stderr, "Child PID %d detached\n", getpid());
 }
@@ -104,6 +114,9 @@ void cleanupAll() {
 
     if(shmResourceDescID > 0)
         cleanupSharedMemory(&shmResourceDescID);
+
+    if(shmRequestID > 0)
+        cleanupSharedMemory(&shmRequestID);
 }
 
 //Clock functions:
