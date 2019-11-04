@@ -23,7 +23,7 @@ static void addToActiveProcesses() {
                 return;
             }
         }
-        fprintf(stderr, "Active process array full\n");
+        //fprintf(stderr, "Active process array full\n");
     }
 
     fprintf(stderr, "Active process array is NULL--Process not added\n");
@@ -119,7 +119,7 @@ int destroyProcessManager() {
 int spawnProcess() {
     //Don't spawn process if array is full
     if(activeProcessArrayFull() == 1) {
-        fprintf(stderr, "\t\t\tProcess array full--No fork\n");
+        //fprintf(stderr, "\t\t\tProcess array full--No fork\n");
         return 0;
     }
 
