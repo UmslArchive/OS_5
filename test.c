@@ -81,6 +81,26 @@ void testTimeHasPassed() {
     printf("Is 1:000000001 after or at 1:000000000?\t");
     result == 1 ? printf("YES\n") : printf("NO\n");
 
+    //Test only seconds after
+    mainClock.seconds = 6;
+    mainClock.nanoseconds = 100;
+    timeLimit.seconds = 5;
+    timeLimit.nanoseconds = 100;
+
+    result = checkIfPassedTime(&mainClock, &timeLimit);
+    printf("Is 6:000000000 after or at 5:000000000?\t");
+    result == 1 ? printf("YES\n") : printf("NO\n");
+
+    //Test only seconds before
+    mainClock.seconds = 4;
+    mainClock.nanoseconds = 100;
+    timeLimit.seconds = 5;
+    timeLimit.nanoseconds = 100;
+
+    result = checkIfPassedTime(&mainClock, &timeLimit);
+    printf("Is 4:000000000 after or at 5:000000000?\t");
+    result == 1 ? printf("YES\n") : printf("NO\n");
+
     printf("-----\n");
 }
 
