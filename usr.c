@@ -33,14 +33,14 @@ int main(int arg, char* argv[]) {
     timeLimit.seconds = 0;
     
     while(1) {
-        //Critical section
 
         if(checkIfPassedTime(shmClockPtr, &timeLimit) == 1) {
             sem_wait(shmSemPtr);
                 //Set new time limit
-                setClock(&timeLimit, shmClockPtr->seconds, shmClockPtr->nanoseconds + rand() % 499999999 + 1);
+                setClock(&timeLimit, shmClockPtr->seconds, shmClockPtr->nanoseconds);
+                advanceClock(&timeLimit, 0, rand() % 499999999 + 1);
                 advanceClock(shmClockPtr, 0, 50);
-                printf("USR : ");
+                fprintf(stderr, "USR : ");
                 printClock(shmClockPtr);
             sem_post(shmSemPtr);
         }
