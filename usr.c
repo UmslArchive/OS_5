@@ -39,7 +39,7 @@ int main(int arg, char* argv[]) {
                 //Set new time limit
                 setClock(&timeLimit, shmClockPtr->seconds, shmClockPtr->nanoseconds);
                 advanceClock(&timeLimit, 0, rand() % 499999999 + 1);
-                advanceClock(shmClockPtr, 0, 50);
+                advanceClock(shmClockPtr, 1, 0);
                 fprintf(stderr, "\t\t\t\tUSR : ");
                 printClock(shmClockPtr);
             sem_post(shmSemPtr);

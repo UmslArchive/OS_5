@@ -40,11 +40,9 @@ int main(int arg, char* argv[]) {
     //Generate first random process spawn time
     unsigned int spawnTime = rand() % 499999999 + 1;
     
+        spawnProcess();
     while(1) {
 
-        spawnProcess();
-
-        
 
         //Critical section
         sem_wait(shmSemPtr);
