@@ -137,5 +137,14 @@ void printAllRequests(Request* reqArray) {
 }
 
 void printAllResDesc(ResourceDescriptor* resArray) {
-
+    int i;
+    ResourceDescriptor* iterator = resArray;
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        fprintf(stderr, "RESOURCE #%d maxAllocs=%d shareable=%d\n", i, iterator->maxAllocs, iterator->shareable);
+        fprintf(stderr, "\tallocs -> ");
+        for(i = 0; i < iterator->maxAllocs; ++i) {
+            fprintf(stderr, "%d(%d) ", i, iterator->currentAllocs[i]);
+        }
+        fprintf(stderr, "\n");
+    }
 }
