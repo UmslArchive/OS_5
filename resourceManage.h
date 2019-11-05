@@ -14,11 +14,14 @@ typedef struct system_state_struct {
 } SystemState;
 
 //oss process resource functions
-void processRequests(Request* reqArray);
-void isSafeState();
-void approveRequest(Request* reqArray);
-
+void getRequests(Request* reqArray);
+int isSafeState();
+void allocRequests(Request* reqArray);
 
 //usrPs process resource functions
+int makeRequest(Request* reqArray);
+
+//Utility
+Request* getProcessRequestIterator(Request* reqArray, pid_t pid);
 
 #endif

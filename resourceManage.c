@@ -6,4 +6,6 @@
 
 #include "resourceManage.h"
 
-Request* currentRequest = NULL;
+Request* getProcessRequestIterator(Request* reqArray, pid_t pid) {
+    int index = getPidIndex(pid);
+}
