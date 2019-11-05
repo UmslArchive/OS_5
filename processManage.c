@@ -181,5 +181,5 @@ int getPidIndex(pid_t searchPid) {
 }
 
 int getNumActivePs() {
-    return numActivePs;
+    return (int)numActivePs;
 }

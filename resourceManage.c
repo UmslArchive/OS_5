@@ -94,12 +94,25 @@ void allocRequests(Request* reqArray) {
 }
 
 //usrPs process resource functions:
-int makeRequest(Request* reqArray) {
+int processSendRequest(Request* reqArray, pid_t pid, int resIndex) {
     return 0;
 }
 
 void printRequest(Request* reqArray, pid_t pid) {
-     
+     Request* iterator = getProcessRequestIterator(reqArray, pid);
+
+     if(iterator != NULL) {
+         fprintf(stderr, "ERROR: Couldn't print request. PID not in activePSArr\n");
+         return;
+     }
+    
+    fprintf("REQUEST from %d: mc=%d res=%d amt=%d at %d:%d",
+        pid, 
+        iterator->maxClaims, 
+        iterator->resource, 
+        iterator->amount, 
+        iterator->timestamp.seconds,
+        iterator->timestamp.nanoseconds);
 }
 
 void printResDesc(ResourceDescriptor* resArray, int resIndex) {

@@ -30,7 +30,7 @@ void allocRequests(Request* reqArray);
 
 
 //usrPs process resource functions:
-int makeRequest(Request* reqArray);
+int processSendRequest(Request* reqArray, pid_t pid, int resIndex);
 
 //Utility:
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid);

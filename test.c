@@ -124,7 +124,7 @@ void testClockSet() {
     printf("-----\n");
 }
 
-void testGetProcessRequestIterator() {
+void testResourceArrayInits() {
     
 }
 
