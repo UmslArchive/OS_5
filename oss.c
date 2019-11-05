@@ -61,8 +61,8 @@ int main(int arg, char* argv[]) {
         //Critical section
         sem_wait(shmSemPtr);
             advanceClock(shmClockPtr, 0, 10000);
-            fprintf(stderr, "OSS : ");
-            printClock(shmClockPtr);
+            /* fprintf(stderr, "OSS : ");
+            printClock(shmClockPtr); */
                 
         sem_post(shmSemPtr);
 

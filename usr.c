@@ -27,19 +27,27 @@ int main(int arg, char* argv[]) {
     ResourceDescriptor* shmResourceDescPtr = (ResourceDescriptor*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_USR_FLAGS);
     Request* shmRequestPtr = (Request*)initSharedMemory(SHM_KEY_REQUEST, shmRequestSize, &shmRequestID, SHM_USR_FLAGS);
 
+    //Save spawn time
+    Clock spawnTime;
+    spawnTime.seconds = shmClockPtr->seconds;
+    spawnTime.nanoseconds = shmClockPtr->nanoseconds;
+
     //Generate first time limit
     Clock timeLimit;
-    timeLimit.nanoseconds = rand() % 499999999 + 1;
-    timeLimit.seconds = 0;
+    timeLimit.nanoseconds = spawnTime.nanoseconds;
+    timeLimit.seconds = spawnTime.seconds;
+    advanceClock(&timeLimit, 0, rand() % 499999999 + 1);
 
+    int count = 0;
     while(1) {
         if(checkIfPassedTime(shmClockPtr, &timeLimit) == 1) {
             
             sem_wait(shmSemPtr);
-                
+                count++;
+
                 //Print time
-                fprintf(stderr, "\t\t\t\tUSR %d: ", getpid());
-                printClock(shmClockPtr);
+                /* fprintf(stderr, "\t\t\t\tUSR %d: ", getpid());
+                printClock(shmClockPtr); */
 
                 //Set new time limit
                 advanceClock(&timeLimit, 0, rand() % 499999999 + 1);
@@ -47,12 +55,11 @@ int main(int arg, char* argv[]) {
                 //Advance the main clock
                 advanceClock(shmClockPtr, 0, 1);
 
-                //sleep(5);
             sem_post(shmSemPtr);
         }
         
         //Check if a signal was received
-        if(usrSignalReceivedFlag == 1)
+        if(usrSignalReceivedFlag == 1 || count > 20)
             break;
     }
 
