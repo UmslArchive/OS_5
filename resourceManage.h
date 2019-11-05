@@ -9,9 +9,30 @@
 
 #include "shared.h"
 
+//Just the alloc matrix updated with newest set of requests 
 typedef struct system_state_struct {
-    //from book
+
 } SystemState;
+
+typedef struct alloc_mat_struct {
+
+} AllocMatrix;
+
+typedef struct claim_mat_struct {
+
+} ClaimMatrix;
+
+typedef struct res_vec_struct {
+
+} ResourceVector;
+
+typedef struct avail_vec_struct {
+
+} AvailableVector;
+
+//Initialization
+void initRequestArray();
+void initResourceDescriptorArray();
 
 //oss process resource functions:
 void getRequests(Request* reqArray);

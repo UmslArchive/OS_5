@@ -33,7 +33,7 @@ int isSafeState(SystemState* whatIfState) {
 }
 
 void allocRequests(Request* reqArray) {
-
+    
 }
 
 //usrPs process resource functions:
