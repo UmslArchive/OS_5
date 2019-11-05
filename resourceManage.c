@@ -36,7 +36,7 @@ void allocRequests(Request* reqArray) {
 
 }
 
-//usrPs process resource functions
+//usrPs process resource functions:
 int makeRequest(Request* reqArray) {
 
 }
