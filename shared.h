@@ -31,8 +31,6 @@ extern const size_t shmRequestSize;
 extern const int SHM_OSS_FLAGS;
 extern const int SHM_USR_FLAGS;
 
-extern pid_t pid;
-
 //----------------------------------------
 
 //Structs

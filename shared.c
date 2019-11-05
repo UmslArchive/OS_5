@@ -14,13 +14,11 @@ const key_t SHM_KEY_CLOCK = 0x99999999;
 const key_t SHM_KEY_RESOURCE = 0x77777777;
 const key_t SHM_KEY_REQUEST = 0x88888888;
 
-
 //IDs
 int shmSemID = 0;
 int shmClockID = 0;
 int shmResourceDescID = 0;
 int shmRequestID = 0;
-
 
 //Sizes
 const size_t shmSemSize = sizeof(sem_t);
