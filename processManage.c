@@ -9,6 +9,7 @@
 static int pid = 0;
 static int exitStatus = 0;
 static pid_t* activeProccesses = NULL;
+static int numActivePs = 0;
 
 //Static functions:
 
@@ -137,6 +138,8 @@ int spawnProcess() {
     }
 
     addToActiveProcesses();
+    ++numActivePs;
+    
     return 0;
 }
 
@@ -147,6 +150,7 @@ void waitNoBlock() {
         else {
             //fprintf(stderr, "PID %d exited w/ status %d\n", pid, WEXITSTATUS(exitStatus));
             removeFromActiveProccesses(pid);
+            --numActivePs;
             //printActiveProcessArray();
         }
     }
@@ -174,4 +178,8 @@ int getPidIndex(pid_t searchPid) {
         }
         return -1;
     }
+}
+
+int getNumActivePs() {
+    return numActivePs;
 }
