@@ -172,12 +172,12 @@ int getPidIndex(pid_t searchPid) {
     int i;
     if(activeProccesses != NULL) {
         for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-            if(activeProccesses[i] = searchPid) {
+            if(activeProccesses[i] == searchPid) {
                 return i;
             }
         }
-        return -1;
     }
+    return -1;
 }
 
 int getNumActivePs() {

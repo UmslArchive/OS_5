@@ -25,7 +25,7 @@ static int availVec[MAX_RESOURCES];
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid) {
     int index = getPidIndex(pid);
 
-    if(index = -1) {
+    if(index == -1) {
         fprintf(stderr, "Request iterator is NULL. PID not found in active array\n");
         return NULL;
     }
@@ -55,5 +55,5 @@ void allocRequests(Request* reqArray) {
 
 //usrPs process resource functions:
 int makeRequest(Request* reqArray) {
-
+    return 0;
 }
