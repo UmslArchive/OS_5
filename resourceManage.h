@@ -9,26 +9,13 @@
 
 #include "shared.h"
 
-//Just the alloc matrix updated with newest set of requests 
-typedef struct system_state_struct {
+#define MAX_QUEUE_SIZE 100
 
-} SystemState;
-
-typedef struct alloc_mat_struct {
-
-} AllocMatrix;
-
-typedef struct claim_mat_struct {
-
-} ClaimMatrix;
-
-typedef struct res_vec_struct {
-
-} ResourceVector;
-
-typedef struct avail_vec_struct {
-
-} AvailableVector;
+typedef struct queue_struct {
+    int front;
+    int back;
+    Request array[MAX_QUEUE_SIZE];
+} RequestQueue;
 
 //Initialization
 void initRequestArray();
@@ -36,8 +23,11 @@ void initResourceDescriptorArray();
 
 //oss process resource functions:
 void getRequests(Request* reqArray);
-int isSafeState(SystemState* whatIfState);
+int isSafeState();
 void allocRequests(Request* reqArray);
+
+//Struct build/update functions
+
 
 //usrPs process resource functions:
 int makeRequest(Request* reqArray);

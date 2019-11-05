@@ -1,4 +1,3 @@
-#include "processManage.h"
 #include "interrupts.h"
 #include "resourceManage.h"
 
@@ -123,6 +122,10 @@ void testClockSet() {
     printClock(&clock);
 
     printf("-----\n");
+}
+
+void testGetProcessRequestIterator() {
+    
 }
 
 int main() {

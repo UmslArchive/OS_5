@@ -8,7 +8,7 @@
 #include "resourceManage.h"
 
 int main(int arg, char* argv[]) {
-
+    
     //Initializations:
     
     srand(time(NULL));

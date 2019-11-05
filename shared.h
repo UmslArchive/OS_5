@@ -9,6 +9,8 @@
 
 #include "processManage.h"
 
+#define MAX_RESOURCES 20
+
 //Keys
 extern const key_t SHM_KEY_SEM;     
 extern const key_t SHM_KEY_CLOCK;

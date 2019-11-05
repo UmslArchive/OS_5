@@ -6,8 +6,6 @@
 
 #include "shared.h"
 
-#define MAX_RESOURCES 20
-
 //Keys
 const key_t SHM_KEY_SEM = 0x66666666;   
 const key_t SHM_KEY_CLOCK = 0x99999999;
