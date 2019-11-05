@@ -106,7 +106,7 @@ void printRequest(Request* reqArray, pid_t pid) {
          return;
      }
     
-    fprintf("REQUEST from %d: mc=%d res=%d amt=%d at %d:%d",
+    fprintf(stderr, "REQUEST from %d: mc=%d res=%d amt=%d at %d:%d\n",
         pid, 
         iterator->maxClaims, 
         iterator->resource, 
