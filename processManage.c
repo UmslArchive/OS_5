@@ -168,7 +168,7 @@ void killChildren() {
 }
 
 //Utility
-int getPidIndex(pid_t searchPid) {
+int getIndexOfPid(pid_t searchPid) {
     int i;
     if(activeProccesses != NULL) {
         for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
@@ -179,6 +179,15 @@ int getPidIndex(pid_t searchPid) {
     }
     return -1;
 }
+
+pid_t getPidOfIndex(int index) {
+    if(index < 0 || index >= MAX_CHILD_PROCESSES) {
+        fprintf(stderr, "ERROR: getPidOfIndex: invalid param\n");
+        return -1;
+    }
+    return activeProccesses[index];
+}
+
 
 int getNumActivePs() {
     return (int)numActivePs;

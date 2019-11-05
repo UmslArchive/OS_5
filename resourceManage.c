@@ -21,21 +21,6 @@ static int resVec[MAX_RESOURCES];
 //Stores current total available resources
 static int availVec[MAX_RESOURCES];
 
-
-/* typedef struct res_desc_struct {
-    unsigned int maxAllocs;
-    pid_t currentAllocs[MAX_RESOURCE_INSTANCES];
-    int shareable;
-} ResourceDescriptor;
-
-
-typedef struct request_struct {
-    unsigned int maxClaims;
-    unsigned int resource;
-    unsigned int amount;
-    Clock timestamp;
-} Request; */
-
 void initRequestArray(Request* reqArray) {
     int i;
     Request* iterator = reqArray;
@@ -63,7 +48,7 @@ void initResourceDescriptorArray(ResourceDescriptor* resArray){
 }
 
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid) {
-    int index = getPidIndex(pid);
+    int index = getIndexOfPid(pid);
 
     if(index == -1) {
         fprintf(stderr, "Request iterator is NULL. PID not found in active array\n");
@@ -116,11 +101,39 @@ void printRequest(Request* reqArray, pid_t pid) {
 }
 
 void printResDesc(ResourceDescriptor* resArray, int resIndex) {
+    if(resArray == NULL || resIndex < 0 || resIndex >= MAX_RESOURCES) {
+        fprintf(stderr, "ERROR: couldn't print resource description -- Invalid params\n");
+        return;
+    }
 
+    int i;
+    ResourceDescriptor* iterator = resArray;
+    for(i = 0; i < resIndex; ++i) {
+        iterator++;
+    }
+
+    fprintf(stderr, "RESOURCE #%d maxAllocs=%d shareable=%d\n", resIndex, iterator->maxAllocs, iterator->shareable);
+    fprintf(stderr, "\tallocs -> ");
+    for(i = 0; i < iterator->maxAllocs; ++i) {
+        fprintf(stderr, "%d(%d) ", i, iterator->currentAllocs[i]);
+    }
+    fprintf(stderr, "\n");
 }
 
 void printAllRequests(Request* reqArray) {
+    int i;
+    Request* iterator = reqArray;
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        fprintf(stderr, "REQUEST from %d: mc=%d res=%d amt=%d at %d:%d\n",
+        getPidOfIndex(i), 
+        iterator->maxClaims, 
+        iterator->resource, 
+        iterator->amount, 
+        iterator->timestamp.seconds,
+        iterator->timestamp.nanoseconds);
 
+        iterator++;
+    }
 }
 
 void printAllResDesc(ResourceDescriptor* resArray) {
