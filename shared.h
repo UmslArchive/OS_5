@@ -42,7 +42,7 @@ typedef struct clock_struct {
 //1 for each resource
 typedef struct res_desc_struct {
     unsigned int maxAllocs;
-    pid_t currentAllocs[10];
+    pid_t currentAllocs[10]; //Instances (random [1, 10])
     int shareable;
 } ResourceDescriptor;
 
