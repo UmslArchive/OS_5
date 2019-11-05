@@ -18,8 +18,8 @@ typedef struct queue_struct {
 } RequestQueue;
 
 //Initialization
-void initRequestArray();
-void initResourceDescriptorArray();
+void initRequestArray(Request* reqArray);
+void initResourceDescriptorArray(ResourceDescriptor* resArray);
 
 //oss process resource functions:
 void getRequests(Request* reqArray);
@@ -34,5 +34,9 @@ int makeRequest(Request* reqArray);
 
 //Utility:
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid);
+void printRequest(Request* reqArray, pid_t pid);
+void printResDesc(ResourceDescriptor* resArray, int resIndex);
+void printAllRequests(Request* reqArray);
+void printAllResDesc(ResourceDescriptor* resArray);
 
 #endif

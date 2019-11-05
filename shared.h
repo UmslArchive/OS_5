@@ -10,6 +10,7 @@
 #include "processManage.h"
 
 #define MAX_RESOURCES 20
+#define MAX_RESOURCE_INSTANCES 10
 
 //Keys
 extern const key_t SHM_KEY_SEM;     
@@ -44,7 +45,7 @@ typedef struct clock_struct {
 //1 for each resource
 typedef struct res_desc_struct {
     unsigned int maxAllocs;
-    pid_t currentAllocs[10]; //Instances (random [1, 10])
+    pid_t currentAllocs[MAX_RESOURCE_INSTANCES];
     int shareable;
 } ResourceDescriptor;
 
