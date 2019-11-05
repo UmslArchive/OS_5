@@ -18,6 +18,7 @@ int main(int arg, char* argv[]) {
     ossInitSignalHandler();
     sigaction(SIGINT, &ossSigAction, 0);
     sigaction(SIGALRM, &ossSigAction, 0);
+    sigaction(SIGTERM, &ossSigAction, 0);
 
     initOssProcessManager();
 
@@ -38,18 +39,32 @@ int main(int arg, char* argv[]) {
     initClock(shmClockPtr);
 
     //Generate first random process spawn time
-    unsigned int spawnTime = rand() % 499999999 + 1;
+    Clock spawnTime;
+    spawnTime.nanoseconds = rand() % 499999999 + 1;
+    spawnTime.seconds = 0;
     
-    //DEBUG spawn only one process
-    spawnProcess();
-    
+    int numProcesses = 0;
+
+    //DEBUG spawn only one process    
     while(1) {
-        
+        if(checkIfPassedTime(shmClockPtr, &spawnTime) == 1) {
+            //Spawn
+            if(spawnProcess() == 1) {
+                fprintf(stderr, "%d Process Spawned:\n", ++numProcesses);
+                printClock(shmClockPtr);
+            }
+
+            //Set new time limit
+            setClock(&spawnTime, shmClockPtr->seconds, shmClockPtr->nanoseconds);
+            advanceClock(&spawnTime, 0, rand() % 499999999 + 1);
+        }
+
         //Critical section
         sem_wait(shmSemPtr);
-            advanceClock(shmClockPtr, 1, 0);
+            advanceClock(shmClockPtr, 0, 10000);
             fprintf(stderr, "OSS : ");
             printClock(shmClockPtr);
+                
         sem_post(shmSemPtr);
 
         //Wait on dead child if there is one

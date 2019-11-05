@@ -39,7 +39,8 @@ void killChildren();
 
 void printActiveProcessArray();
 
-//usr process management functions
+//Utility
+int getPidIndex(pid_t pid);
 
 
 #endif

@@ -9,6 +9,7 @@
 //Global signal flags
 int ossSignalReceivedFlag = 0;
 int usrSignalReceivedFlag = 0;
+int ossPauseFlag = 0;
 
 //Global sigaction structs
 struct sigaction ossSigAction;
@@ -18,13 +19,18 @@ void ossSignalHandler(int signal) {
     switch(signal) {
         case SIGINT:
             fprintf(stderr, "OSS caught SIGINT signal\n");
+            ossSignalReceivedFlag = 1;
             break;
 
         case SIGALRM:
             fprintf(stderr, "OSS caught SIGALRM signal\n");
+            ossSignalReceivedFlag = 1;
+            break;
+        
+        case SIGTERM:
+            ossPauseFlag = 1;
             break;
     }    
-    ossSignalReceivedFlag = 1;
 }
 
 void usrSignalHandler(int signal) {

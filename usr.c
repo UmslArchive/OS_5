@@ -31,21 +31,26 @@ int main(int arg, char* argv[]) {
     Clock timeLimit;
     timeLimit.nanoseconds = rand() % 499999999 + 1;
     timeLimit.seconds = 0;
-    
-    while(1) {
 
+    while(1) {
         if(checkIfPassedTime(shmClockPtr, &timeLimit) == 1) {
+            
             sem_wait(shmSemPtr);
-                //Set new time limit
-                setClock(&timeLimit, shmClockPtr->seconds, shmClockPtr->nanoseconds);
-                advanceClock(&timeLimit, 0, rand() % 499999999 + 1);
-                advanceClock(shmClockPtr, 1, 0);
-                fprintf(stderr, "\t\t\t\tUSR : ");
+                
+                //Print time
+                fprintf(stderr, "\t\t\t\tUSR %d: ", getpid());
                 printClock(shmClockPtr);
+
+                //Set new time limit
+                advanceClock(&timeLimit, 0, rand() % 499999999 + 1);
+
+                //Advance the main clock
+                advanceClock(shmClockPtr, 0, 1);
+
+                //sleep(5);
             sem_post(shmSemPtr);
         }
         
-
         //Check if a signal was received
         if(usrSignalReceivedFlag == 1)
             break;

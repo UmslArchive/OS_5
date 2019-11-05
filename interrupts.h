@@ -16,6 +16,7 @@
 
 extern int ossSignalReceivedFlag;
 extern int usrSignalReceivedFlag;
+extern int ossPauseFlag;
 
 extern struct sigaction ossSigAction;
 extern struct sigaction usrSigAction;

@@ -87,6 +87,4 @@ Clock timeDifference(Clock* subtractFrom, Clock* subtractAmount);
 void printClock(Clock* clock);
 int checkIfPassedTime(Clock* mainClock, Clock* timeLimit);
 
-
-
 #endif

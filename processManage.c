@@ -147,7 +147,7 @@ void waitNoBlock() {
         else {
             //fprintf(stderr, "PID %d exited w/ status %d\n", pid, WEXITSTATUS(exitStatus));
             removeFromActiveProccesses(pid);
-            printActiveProcessArray();
+            //printActiveProcessArray();
         }
     }
 }
@@ -163,5 +163,7 @@ void killChildren() {
     }
 }
 
-
-//Child functions:
+//Utility
+int getPidIndex(pid_t pid) {
+    return 0;
+}
