@@ -191,3 +191,6 @@ int checkIfPassedTime(Clock* mainClock, Clock* timeLimit) {
 
     return 0;
 }
+
+//Decided to do all Resource/Request functions 
+//inside of the resourceManage.* files

@@ -73,4 +73,7 @@ Clock timeDifference(Clock* subtractFrom, Clock* subtractAmount);
 void printClock(Clock* clock);
 int checkIfPassedTime(Clock* mainClock, Clock* timeLimit);
 
+//Decided to do all Resource/Request functions 
+//inside of the resourceManage.* files
+
 #endif
