@@ -40,7 +40,7 @@ void killChildren();
 void printActiveProcessArray();
 
 //Utility
-int getPidIndex(pid_t pid);
+int getPidIndex(pid_t searchPid);
 
 
 #endif

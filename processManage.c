@@ -164,6 +164,14 @@ void killChildren() {
 }
 
 //Utility
-int getPidIndex(pid_t pid) {
-    return 0;
+int getPidIndex(pid_t searchPid) {
+    int i;
+    if(activeProccesses != NULL) {
+        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+            if(activeProccesses[i] = searchPid) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
