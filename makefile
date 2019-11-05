@@ -5,7 +5,7 @@
 #=======================================================
 
 CC = gcc
-CFLAGS = -I . -g
+CFLAGS = -I .
 OBJECTS = shared.o processManage.o resourceManage.o interrupts.o
 .SUFFIXES: .c .o
 
