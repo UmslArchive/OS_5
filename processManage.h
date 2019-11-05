@@ -37,9 +37,8 @@ void waitNoBlock();
 int areActiveProcesses();
 void killChildren();
 
-void printActiveProcessArray();
-
 //Utility
+void printActiveProcessArray();
 int getPidIndex(pid_t searchPid);
 
 

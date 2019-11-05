@@ -23,3 +23,20 @@ Request* getProcessRequestIterator(Request* reqArray, pid_t pid) {
 
     return iterator;
 }
+
+void getRequests(Request* reqArray) {
+
+}
+
+int isSafeState(SystemState* whatIfState) {
+    return 0;
+}
+
+void allocRequests(Request* reqArray) {
+
+}
+
+//usrPs process resource functions
+int makeRequest(Request* reqArray) {
+
+}

@@ -15,7 +15,7 @@ typedef struct system_state_struct {
 
 //oss process resource functions
 void getRequests(Request* reqArray);
-int isSafeState();
+int isSafeState(SystemState* whatIfState);
 void allocRequests(Request* reqArray);
 
 //usrPs process resource functions
