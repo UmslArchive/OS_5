@@ -7,6 +7,8 @@ void testClockSet();
 void testRequestArrayInit();
 void testResourceDescriptorInit();
 void testProcessSendRequest();
+void testBuildMatrices();
+void nonConcurrentProgramSimulation();
 
 //===========================================================
 
@@ -210,5 +212,9 @@ void testResourceDescriptorInit() {
 }
 
 void testProcessSendRequest() {
+
+}
+
+void nonConcurrentProgramSimulation() {
 
 }
