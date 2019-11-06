@@ -27,7 +27,7 @@ void initRequestArray(Request* reqArray) {
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         iterator->maxClaims = 0;
         iterator->amount = 0;
-        iterator->resource = 0;
+        iterator->resource = 5;
         iterator->timestamp.nanoseconds = 0;
         iterator->timestamp.seconds = 0;
         iterator++;
@@ -38,7 +38,7 @@ void initResourceDescriptorArray(ResourceDescriptor* resArray){
     int i, j;
     ResourceDescriptor* iterator = resArray;
     for(i = 0; i < MAX_RESOURCES; ++i) {
-        iterator->maxAllocs = 0;
+        iterator->maxAllocs = rand() % 10 + 1;
         for(j = 0; j < MAX_RESOURCE_INSTANCES; ++j) {
             iterator->currentAllocs[j] = 0;
         }
@@ -86,7 +86,7 @@ int processSendRequest(Request* reqArray, pid_t pid, int resIndex) {
 void printRequest(Request* reqArray, pid_t pid) {
      Request* iterator = getProcessRequestIterator(reqArray, pid);
 
-     if(iterator != NULL) {
+     if(iterator == NULL) {
          fprintf(stderr, "ERROR: Couldn't print request. PID not in activePSArr\n");
          return;
      }

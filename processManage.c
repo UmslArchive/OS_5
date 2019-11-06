@@ -143,6 +143,21 @@ int spawnProcess() {
     return 0;
 }
 
+int spawnDummyProcess() {
+    //Don't spawn process if array is full
+    if(activeProcessArrayFull() == 1) {
+        //fprintf(stderr, "\t\t\tProcess array full--No fork\n");
+        return 0;
+    }
+
+    pid = rand() % 499 + 1;
+
+    addToActiveProcesses();
+    ++numActivePs;
+    
+    return 0;
+}
+
 void waitNoBlock() {
     while((pid = waitpid(-1, &exitStatus, WNOHANG))) {
         if((pid == -1) && (errno != EINTR))

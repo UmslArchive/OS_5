@@ -33,6 +33,7 @@ int destroyProcessManager();
 
 //oss process management functions:
 int spawnProcess();
+int spawnDummyProcess();
 void waitNoBlock();
 int areActiveProcesses();
 void killChildren();
