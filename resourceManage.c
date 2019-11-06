@@ -27,7 +27,7 @@ void initRequestArray(Request* reqArray) {
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         iterator->maxClaims = 0;
         iterator->amount = 0;
-        iterator->resource = 5;
+        iterator->resource = 0;
         iterator->timestamp.nanoseconds = 0;
         iterator->timestamp.seconds = 0;
         iterator++;
@@ -36,13 +36,21 @@ void initRequestArray(Request* reqArray) {
 
 void initResourceDescriptorArray(ResourceDescriptor* resArray){
     int i, j;
+    int isShareable;
+
     ResourceDescriptor* iterator = resArray;
     for(i = 0; i < MAX_RESOURCES; ++i) {
         iterator->maxAllocs = rand() % 10 + 1;
+
         for(j = 0; j < MAX_RESOURCE_INSTANCES; ++j) {
             iterator->currentAllocs[j] = 0;
         }
-        iterator->shareable = rand() % 2;
+
+        //20% of resources are shareable
+        isShareable = rand() % 100;
+        if(isShareable < 20) isShareable = 1; else isShareable = 0;
+        iterator->shareable = isShareable;
+
         iterator++;
     }
 }
@@ -137,14 +145,15 @@ void printAllRequests(Request* reqArray) {
 }
 
 void printAllResDesc(ResourceDescriptor* resArray) {
-    int i;
+    int i, j;
     ResourceDescriptor* iterator = resArray;
     for(i = 0; i < MAX_RESOURCES; ++i) {
         fprintf(stderr, "RESOURCE #%d maxAllocs=%d shareable=%d\n", i, iterator->maxAllocs, iterator->shareable);
         fprintf(stderr, "\tallocs -> ");
-        for(i = 0; i < iterator->maxAllocs; ++i) {
-            fprintf(stderr, "%d(%d) ", i, iterator->currentAllocs[i]);
+        for(j = 0; j < iterator->maxAllocs; ++j) {
+            fprintf(stderr, "%d(%d) ", j, iterator->currentAllocs[j]);
         }
         fprintf(stderr, "\n");
+        iterator++;
     }
 }

@@ -111,7 +111,6 @@ void testClockSet() {
     printf("Set clock tests:\n");
 
     //nanosec to0 high test
-
     printf("Attempting to set clock to 1:1000000000\n");
     setClock(&clock, 1, 1000000000);
     printClock(&clock);
@@ -130,6 +129,8 @@ void testRequestArrayInit() {
     initOssProcessManager();
     Request* req = malloc(shmRequestSize);
 
+    fprintf(stderr, "Request array init test:\n");
+
     for(i = 0; i < 25; ++i) {
         spawnDummyProcess();
     }
@@ -140,16 +141,39 @@ void testRequestArrayInit() {
 
     free(req);
     destroyProcessManager();
+
+    fprintf(stderr, "-----\n");
+}
+
+void testResourceDescriptorInit() {
+    int i;
+    ResourceDescriptor* desc = malloc(shmResourceDescSize);
+    initOssProcessManager();
+
+    for(i = 0; i < 25; ++i) {
+        spawnDummyProcess();
+    }
+
+    initResourceDescriptorArray(desc);
+
+    printAllResDesc(desc);
+
+    destroyProcessManager();
+    free(desc);
+
+    fprintf(stderr, "-----\n");
 }
 
 int main() {
+    srand(time(NULL));
     printf("\nRUNNING TESTS:\n-----\n");
 
     testTimeDifference();
     testTimeHasPassed();
     testClockSet();
 
-    testResourceArrayInits();
+    testRequestArrayInit();
+    testResourceDescriptorInit();
 
     return 0;
 }

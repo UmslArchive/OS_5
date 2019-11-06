@@ -63,7 +63,7 @@ int main(int arg, char* argv[]) {
             advanceClock(shmClockPtr, 0, 10000);
             /* fprintf(stderr, "OSS : ");
             printClock(shmClockPtr); */
-                
+        
         sem_post(shmSemPtr);
 
         //Wait on dead child if there is one
