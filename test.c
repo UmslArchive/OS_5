@@ -6,18 +6,22 @@ void testTimeHasPassed();
 void testClockSet();
 void testRequestArrayInit();
 void testResourceDescriptorInit();
+void testProcessSendRequest();
 
 //===========================================================
 
 
 int main() {
     srand(time(NULL));
+
     printf("\nRUNNING TESTS:\n-----\n");
 
+    //Clock Tests
     testTimeDifference();
     testTimeHasPassed();
     testClockSet();
 
+    //Resource tests
     testRequestArrayInit();
     testResourceDescriptorInit();
 
@@ -163,7 +167,17 @@ void testRequestArrayInit() {
 
     initRequestArray(req);  
 
+    //Test printing the entire array
     printAllRequests(req);
+
+    fprintf(stderr, "\n");
+
+    //Test a few arbitrary single prints indices = { -1, 0, 10, MAX_CHILD_PROCESSES - 1, MAX_CHILD_PROCESSES }
+    printRequest(req, getPidOfIndex(-1));
+    printRequest(req, getPidOfIndex(0));
+    printRequest(req, getPidOfIndex(10));
+    printRequest(req, getPidOfIndex(MAX_CHILD_PROCESSES - 1));
+    printRequest(req, getPidOfIndex(MAX_CHILD_PROCESSES));
 
     free(req);
     destroyProcessManager();
@@ -176,16 +190,25 @@ void testResourceDescriptorInit() {
     ResourceDescriptor* desc = malloc(shmResourceDescSize);
     initOssProcessManager();
 
-    for(i = 0; i < 25; ++i) {
-        spawnDummyProcess();
-    }
-
     initResourceDescriptorArray(desc);
 
     printAllResDesc(desc);
+
+    fprintf(stderr, "\n");
+
+    //Test a few arbitrary single prints indices = { -1, 0, 10, MAX_RESOURCES - 1, MAX_RESOURCES }
+    printResDesc(desc, -1);
+    printResDesc(desc, 0);
+    printResDesc(desc, 10);
+    printResDesc(desc, MAX_RESOURCES - 1);
+    printResDesc(desc, MAX_RESOURCES);
 
     destroyProcessManager();
     free(desc);
 
     fprintf(stderr, "-----\n");
+}
+
+void testProcessSendRequest() {
+
 }

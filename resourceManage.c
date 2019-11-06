@@ -59,7 +59,12 @@ Request* getProcessRequestIterator(Request* reqArray, pid_t pid) {
     int index = getIndexOfPid(pid);
 
     if(index == -1) {
-        fprintf(stderr, "Request iterator is NULL. PID not found in active array\n");
+        fprintf(stderr, "ERROR: Request iterator is NULL\n");
+        return NULL;
+    }
+
+    if(reqArray == NULL) {
+        fprintf(stderr, "ERROR: PID not found in active array\n");
         return NULL;
     }
 
