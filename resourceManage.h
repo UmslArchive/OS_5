@@ -26,9 +26,6 @@ void getRequests(Request* reqArray);
 int isSafeState();
 void allocRequests(Request* reqArray);
 
-//Struct build/update functions
-
-
 //usrPs process resource functions:
 int processSendRequest(Request* reqArray, pid_t pid, int resIndex);
 
