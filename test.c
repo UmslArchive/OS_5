@@ -1,6 +1,32 @@
 #include "interrupts.h"
 #include "resourceManage.h"
 
+void testTimeDifference();
+void testTimeHasPassed();
+void testClockSet();
+void testRequestArrayInit();
+void testResourceDescriptorInit();
+
+//===========================================================
+
+
+int main() {
+    srand(time(NULL));
+    printf("\nRUNNING TESTS:\n-----\n");
+
+    testTimeDifference();
+    testTimeHasPassed();
+    testClockSet();
+
+    testRequestArrayInit();
+    testResourceDescriptorInit();
+
+    return 0;
+}
+
+
+//==========================================================
+
 void testTimeDifference() {
     Clock first;
     Clock second;
@@ -162,18 +188,4 @@ void testResourceDescriptorInit() {
     free(desc);
 
     fprintf(stderr, "-----\n");
-}
-
-int main() {
-    srand(time(NULL));
-    printf("\nRUNNING TESTS:\n-----\n");
-
-    testTimeDifference();
-    testTimeHasPassed();
-    testClockSet();
-
-    testRequestArrayInit();
-    testResourceDescriptorInit();
-
-    return 0;
 }
