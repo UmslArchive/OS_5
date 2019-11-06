@@ -83,7 +83,4 @@ int main(int arg, char* argv[]) {
     //Cleanup
     destroyProcessManager();
     cleanupAll();
-    
-    
-
 }
