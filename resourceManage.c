@@ -92,7 +92,7 @@ void allocRequests(Request* reqArray) {
 }
 
 //usrPs process resource functions:
-int processSendRequest(Request* reqArray, pid_t pid, int resIndex) {
+int processSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount) {
     return 0;
 }
 

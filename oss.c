@@ -19,6 +19,7 @@ int main(int arg, char* argv[]) {
     sigaction(SIGALRM, &ossSigAction, 0);
     sigaction(SIGTERM, &ossSigAction, 0);
 
+    //Init Managers
     initOssProcessManager();
 
     //Init semaphore

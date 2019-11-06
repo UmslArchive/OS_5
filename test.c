@@ -19,7 +19,7 @@ int main() {
 
     printf("\nRUNNING TESTS:\n-----\n");
 
-    //Clock Tests
+    //Clock tests
     testTimeDifference();
     testTimeHasPassed();
     testClockSet();
@@ -27,6 +27,7 @@ int main() {
     //Resource tests
     testRequestArrayInit();
     testResourceDescriptorInit();
+    testProcessSendRequest();
 
     return 0;
 }
@@ -213,7 +214,22 @@ void testResourceDescriptorInit() {
 }
 
 void testProcessSendRequest() {
+    int i;
 
+    initOssProcessManager();
+    Request* req = malloc(shmRequestSize);
+
+    fprintf(stderr, "Request array init test:\n");
+
+    for(i = 0; i < 25; ++i) {
+        spawnDummyProcess();
+    }
+
+
+    destroyProcessManager();
+    free(req);
+
+    fprintf(stderr, "-----\n");
 }
 
 void nonConcurrentProgramSimulation() {
