@@ -219,12 +219,13 @@ void testProcessSendRequest() {
     initOssProcessManager();
     Request* req = malloc(shmRequestSize);
 
-    fprintf(stderr, "Request array init test:\n");
+    fprintf(stderr, "Request send tests:\n");
 
     for(i = 0; i < 25; ++i) {
         spawnDummyProcess();
     }
 
+    //Request testing here
 
     destroyProcessManager();
     free(req);

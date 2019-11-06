@@ -33,7 +33,6 @@ int destroyProcessManager();
 
 //oss process management functions:
 int spawnProcess();
-int spawnDummyProcess();
 void waitNoBlock();
 int areActiveProcesses();
 void killChildren();
@@ -42,6 +41,7 @@ void killChildren();
 void printActiveProcessArray();
 int getIndexOfPid(pid_t searchPid);
 pid_t getPidOfIndex(int index);
+int spawnDummyProcess();
 
 
 #endif
