@@ -6,7 +6,7 @@
 
 #include "resourceManage.h"
 
-//Just the alloc matrix updated with newest set of requests 
+//Stores alloc matrix updated with newest set of requests (hypothetical future state)
 static int stateMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
 
 //Stores current resource allocs of all processes
