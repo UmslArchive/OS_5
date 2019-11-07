@@ -21,8 +21,6 @@ int shmRequestID = 0;
 //Sizes
 const size_t shmSemSize = sizeof(sem_t);
 const size_t shmClockSize = sizeof(Clock);
-const size_t shmResourceDescSize = MAX_RESOURCES * sizeof(ResourceDescriptor);
-const size_t shmRequestSize = MAX_CHILD_PROCESSES * sizeof(Request);
 
 const int SHM_OSS_FLAGS = IPC_CREAT | IPC_EXCL | 0777;
 const int SHM_USR_FLAGS = 0777;
@@ -43,13 +41,6 @@ sem_t* initShmSemaphore(const key_t key, const size_t size, int* shmid, int flag
         cleanupAll();
         exit(1);
     }
-
-    /* //Init semaphore
-    if(sem_init((sem_t*)temp, 1, 1) == -1) {
-        perror("ERROR:sem_init failed");
-        cleanupAll();
-        exit(1);
-    } */
 
     return (sem_t*)temp;
 }

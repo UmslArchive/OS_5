@@ -9,7 +9,24 @@
 
 #include "shared.h"
 
+#define MAX_RESOURCES 20
+#define MAX_RESOURCE_INSTANCES 10
 #define MAX_QUEUE_SIZE 100
+
+//1 for each resource
+typedef struct res_desc_struct {
+    unsigned int maxAllocs;
+    pid_t currentAllocs[MAX_RESOURCE_INSTANCES];
+    int shareable;
+} ResourceDescriptor;
+
+//1 for each process
+typedef struct request_struct {
+    unsigned int maxClaims;
+    unsigned int resource;
+    unsigned int amount;
+    Clock timestamp;
+} Request;
 
 typedef struct queue_struct {
     int front;
@@ -22,12 +39,12 @@ void initRequestArray(Request* reqArray);
 void initResourceDescriptorArray(ResourceDescriptor* resArray);
 
 //oss process resource functions:
-void getRequests(Request* reqArray);
+void ossRetrieveRequests(Request* reqArray);
 int isSafeState();
 void allocRequests(Request* reqArray);
 
-//usrPs process resource functions:
-int processSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount);
+//usr process resource functions:
+int usrProcessSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount);
 
 //Utility:
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid);

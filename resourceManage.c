@@ -6,6 +6,9 @@
 
 #include "resourceManage.h"
 
+const size_t shmResourceDescSize = MAX_RESOURCES * sizeof(ResourceDescriptor);
+const size_t shmRequestSize = MAX_CHILD_PROCESSES * sizeof(Request);
+
 //Stores alloc matrix updated with newest set of requests (hypothetical future state)
 static int stateMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
 
@@ -92,7 +95,11 @@ void allocRequests(Request* reqArray) {
 }
 
 //usrPs process resource functions:
-int processSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount) {
+
+//Function places validated requests into the request array for a process.
+//Valid meaning doesn't attempt anything impossible, but could still be an
+//unsafe request. OSS will check for safety, not child process.
+int usrProcessSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount) {
     return 0;
 }
 

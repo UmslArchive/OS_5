@@ -196,6 +196,8 @@ void testResourceDescriptorInit() {
 
     initResourceDescriptorArray(desc);
 
+    fprintf(stderr, "Resource descriptor init test:\n");
+
     printAllResDesc(desc);
 
     fprintf(stderr, "\n");

@@ -9,9 +9,6 @@
 
 #include "processManage.h"
 
-#define MAX_RESOURCES 20
-#define MAX_RESOURCE_INSTANCES 10
-
 //Keys
 extern const key_t SHM_KEY_SEM;     
 extern const key_t SHM_KEY_CLOCK;
@@ -41,21 +38,6 @@ typedef struct clock_struct {
     unsigned int seconds;
     unsigned int nanoseconds;
 } Clock;
-
-//1 for each resource
-typedef struct res_desc_struct {
-    unsigned int maxAllocs;
-    pid_t currentAllocs[MAX_RESOURCE_INSTANCES];
-    int shareable;
-} ResourceDescriptor;
-
-//1 for each process
-typedef struct request_struct {
-    unsigned int maxClaims;
-    unsigned int resource;
-    unsigned int amount;
-    Clock timestamp;
-} Request;
 
 //Shared mem init functions
 sem_t* initShmSemaphore(const key_t key, const size_t size, int* shmid, int flags);
