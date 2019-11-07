@@ -20,7 +20,7 @@ typedef enum request_state {
     UNPROCESSED, 
     DENIED, 
     APPROVED, 
-    NULL_PROCESS 
+    NULL_PROCESS
 } ReqState;
 
 //One for each resource
@@ -58,6 +58,7 @@ int isSafeState();
 void allocRequests(Request* reqArray);
 
 //usr process resource functions:
+void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray);
 int usrProcessSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount);
 
 //Utility:

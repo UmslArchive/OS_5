@@ -90,7 +90,6 @@ void getRequests(Request* reqArray) {
 }
 
 int isSafeState() {
-    stateMat[0][0] = 5;
     return 0;
 }
 
@@ -100,10 +99,37 @@ void allocRequests(Request* reqArray) {
 
 //usrPs process resource functions:
 
+void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray) {
+    Request* reqIterator = getProcessRequestIterator(reqArray, pid);
+    ResourceDescriptor* descIterator = descArray;
+
+    //Randomly generate which resource a process will like to have
+    int resourceIndex = rand() % MAX_RESOURCES;
+
+    //Set the resource description iterator
+    int i;
+    for(i = 0; i < resourceIndex; ++i) {
+        descIterator++;
+    }
+    
+    //Randomly generate the amount max claim of a process for the generated resource
+    int claim = rand() % descIterator->maxAllocs + 1;
+
+    //Set the proccesses request array
+    reqIterator->maxClaims = claim;
+    reqIterator->pid = pid;
+    reqIterator->resource = resourceIndex;
+    reqIterator->isRelease = 0;
+    reqIterator->reqState = UNPROCESSED;
+    reqIterator->amount = rand() % claim + 1;
+}
+
 //Function places validated requests into the request array for a process.
 //Valid meaning doesn't attempt anything impossible, but could still be an
 //unsafe request. OSS will check for safety, not child process.
 int usrProcessSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount) {
+    Request* iterator = getProcessRequestIterator(reqArray, pid);
+
     return 0;
 }
 
