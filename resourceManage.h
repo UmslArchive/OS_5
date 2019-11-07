@@ -23,14 +23,14 @@ typedef enum request_state {
     NULL_PROCESS 
 } ReqState;
 
-//1 for each resource
+//One for each resource
 typedef struct res_desc_struct {
     unsigned int maxAllocs;
     pid_t currentAllocs[MAX_CHILD_PROCESSES];
     int shareable;
 } ResourceDescriptor;
 
-//1 for each process
+//One for each process
 typedef struct request_struct {
     ReqState reqState;
     pid_t pid;
@@ -41,7 +41,7 @@ typedef struct request_struct {
     int isRelease;
 } Request;
 
-//Holds rejected requests
+//Holds denied requests
 typedef struct queue_struct {
     int front;
     int back;
