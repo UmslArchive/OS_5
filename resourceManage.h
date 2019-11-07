@@ -11,18 +11,22 @@
 
 #define MAX_RESOURCES 20
 #define MAX_RESOURCE_INSTANCES 10
-#define MAX_QUEUE_SIZE 100
 
 //UNPROCESSED - request sent but not yet received by oss.
 //DENIED - request received and denied by oss. usr process will sleep.
 //APPROVED - Request granted and alloc'd. Ready for new request.
 //NULL_PROCESS - There is no associated active process in the process manager.
-typedef enum request_state { UNPROCESSED, DENIED, APPROVED, NULL_PROCESS } ReqState;
+typedef enum request_state { 
+    UNPROCESSED, 
+    DENIED, 
+    APPROVED, 
+    NULL_PROCESS 
+} ReqState;
 
 //1 for each resource
 typedef struct res_desc_struct {
     unsigned int maxAllocs;
-    pid_t currentAllocs[MAX_RESOURCE_INSTANCES];
+    pid_t currentAllocs[MAX_CHILD_PROCESSES];
     int shareable;
 } ResourceDescriptor;
 
@@ -41,7 +45,7 @@ typedef struct request_struct {
 typedef struct queue_struct {
     int front;
     int back;
-    Request array[MAX_QUEUE_SIZE];
+    Request array[MAX_CHILD_PROCESSES];
 } RequestQueue;
 
 //Initialization
