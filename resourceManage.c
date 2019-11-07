@@ -29,12 +29,14 @@ void initRequestArray(Request* reqArray) {
     int i;
     Request* iterator = reqArray;
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        iterator->reqState = NULL_PROCESS;
         iterator->pid = getPidOfIndex(i);
         iterator->maxClaims = 0;
         iterator->amount = 0;
         iterator->resource = 0;
         iterator->timestamp.nanoseconds = 0;
         iterator->timestamp.seconds = 0;
+        iterator->isRelease = 0;
         iterator++;
     }
 }

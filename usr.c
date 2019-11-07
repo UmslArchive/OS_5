@@ -7,8 +7,6 @@
 #include "interrupts.h"
 #include "resourceManage.h"
 
-typedef enum process_state { AWAKE, ASLEEP } pstate_t;
-
 int main(int arg, char* argv[]) {
 
     //Initializations:
