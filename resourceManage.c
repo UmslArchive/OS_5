@@ -6,6 +6,7 @@
 
 #include "resourceManage.h"
 
+//Shared memory struct array sizes
 const size_t shmResourceDescSize = MAX_RESOURCES * sizeof(ResourceDescriptor);
 const size_t shmRequestSize = MAX_CHILD_PROCESSES * sizeof(Request);
 
@@ -28,6 +29,7 @@ void initRequestArray(Request* reqArray) {
     int i;
     Request* iterator = reqArray;
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        iterator->pid = getPidOfIndex(i);
         iterator->maxClaims = 0;
         iterator->amount = 0;
         iterator->resource = 0;
@@ -145,7 +147,7 @@ void printAllRequests(Request* reqArray) {
     Request* iterator = reqArray;
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         fprintf(stderr, "REQUEST from %d: mc=%d res=%d amt=%d at %d:%d\n",
-        getPidOfIndex(i), 
+        iterator->pid, 
         iterator->maxClaims, 
         iterator->resource, 
         iterator->amount, 

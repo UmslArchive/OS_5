@@ -22,12 +22,14 @@ typedef struct res_desc_struct {
 
 //1 for each process
 typedef struct request_struct {
+    pid_t pid;
     unsigned int maxClaims;
     unsigned int resource;
     unsigned int amount;
     Clock timestamp;
 } Request;
 
+//Holds rejected requests
 typedef struct queue_struct {
     int front;
     int back;
