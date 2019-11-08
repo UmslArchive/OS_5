@@ -236,5 +236,16 @@ void testProcessSendRequest() {
 }
 
 void nonConcurrentProgramSimulation() {
+    /* spawnDummyProcess();
+    if(state == NULL_PROCESS)
+        usrOnSpawnRequest();
+
+    while(1)
+        if(state == UNPROCESSED)
+        ossRetrieveRequests();
+        
+        if(state == APPROVED || DENIED)
+        usrProcessSendRequest(); */
+
 
 }

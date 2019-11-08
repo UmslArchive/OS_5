@@ -34,7 +34,7 @@ typedef struct res_desc_struct {
 typedef struct request_struct {
     ReqState reqState;
     pid_t pid;
-    unsigned int maxClaims;
+    unsigned int maxClaims[MAX_RESOURCES];
     unsigned int resource;
     unsigned int amount;
     Clock timestamp;

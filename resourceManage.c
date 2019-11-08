@@ -26,17 +26,22 @@ static int resVec[MAX_RESOURCES];
 static int availVec[MAX_RESOURCES];
 
 void initRequestArray(Request* reqArray) {
-    int i;
+    int i, j;
     Request* iterator = reqArray;
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         iterator->reqState = NULL_PROCESS;
         iterator->pid = getPidOfIndex(i);
-        iterator->maxClaims = 0;
+
+        for(j = 0; j < MAX_RESOURCES; ++j) {
+            iterator->maxClaims[j] = 0;
+        }
+
         iterator->amount = 0;
         iterator->resource = 0;
         iterator->timestamp.nanoseconds = 0;
         iterator->timestamp.seconds = 0;
         iterator->isRelease = 0;
+
         iterator++;
     }
 }
@@ -113,10 +118,12 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
     }
     
     //Randomly generate the amount max claim of a process for the generated resource
-    int claim = rand() % descIterator->maxAllocs + 1;
+    int claim;
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        claim = rand() % (descIterator->maxAllocs + 1);
+        reqIterator->maxClaims[i] = claim;
+    }
 
-    //Set the proccesses request array
-    reqIterator->maxClaims = claim;
     reqIterator->pid = pid;
     reqIterator->resource = resourceIndex;
     reqIterator->isRelease = 0;
@@ -134,20 +141,26 @@ int usrProcessSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount
 }
 
 void printRequest(Request* reqArray, pid_t pid) {
-     Request* iterator = getProcessRequestIterator(reqArray, pid);
+    Request* iterator = getProcessRequestIterator(reqArray, pid);
 
-     if(iterator == NULL) {
-         fprintf(stderr, "ERROR: Couldn't print request. PID not in activePSArr\n");
-         return;
-     }
-    
-    fprintf(stderr, "REQUEST from %d: mc=%d res=%d amt=%d at %d:%d\n",
-        pid, 
-        iterator->maxClaims, 
+    if(iterator == NULL) {
+        fprintf(stderr, "ERROR: Couldn't print request. PID not in activePSArr\n");
+        return;
+    }
+
+    fprintf(stderr, "REQUEST from %d: res=%d amt=%d at %d:%d",
+        pid,
         iterator->resource, 
         iterator->amount, 
         iterator->timestamp.seconds,
         iterator->timestamp.nanoseconds);
+
+    int i;
+    fprintf(stderr, "\tMC: ");
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        fprintf(stderr, "%d ", iterator->maxClaims[i]);
+    }
+    fprintf(stderr, "\n");
 }
 
 void printResDesc(ResourceDescriptor* resArray, int resIndex) {
@@ -162,7 +175,7 @@ void printResDesc(ResourceDescriptor* resArray, int resIndex) {
         iterator++;
     }
 
-    fprintf(stderr, "RESOURCE #%d maxAllocs=%d shareable=%d\n", resIndex, iterator->maxAllocs, iterator->shareable);
+    fprintf(stderr, "RESOURCE #%d maxAllocs=%d shareable=%d", resIndex, iterator->maxAllocs, iterator->shareable);
     fprintf(stderr, "\tallocs -> ");
     for(i = 0; i < iterator->maxAllocs; ++i) {
         fprintf(stderr, "%d(%d) ", i, iterator->currentAllocs[i]);
@@ -171,16 +184,21 @@ void printResDesc(ResourceDescriptor* resArray, int resIndex) {
 }
 
 void printAllRequests(Request* reqArray) {
-    int i;
+    int i, j;
     Request* iterator = reqArray;
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-        fprintf(stderr, "REQUEST from %d: mc=%d res=%d amt=%d at %d:%d\n",
+        fprintf(stderr, "REQUEST from %d: res=%d amt=%d at %d:%d",
         iterator->pid, 
-        iterator->maxClaims, 
         iterator->resource, 
         iterator->amount, 
         iterator->timestamp.seconds,
         iterator->timestamp.nanoseconds);
+
+        fprintf(stderr, "\tMC: ");
+        for(j = 0; j < MAX_RESOURCES; ++j) {
+            fprintf(stderr, "%d ", iterator->maxClaims[j]);
+        }
+        fprintf(stderr, "\n");
 
         iterator++;
     }
@@ -190,7 +208,7 @@ void printAllResDesc(ResourceDescriptor* resArray) {
     int i, j;
     ResourceDescriptor* iterator = resArray;
     for(i = 0; i < MAX_RESOURCES; ++i) {
-        fprintf(stderr, "RESOURCE #%d maxAllocs=%d shareable=%d\n", i, iterator->maxAllocs, iterator->shareable);
+        fprintf(stderr, "RESOURCE #%d maxAllocs=%d shareable=%d", i, iterator->maxAllocs, iterator->shareable);
         fprintf(stderr, "\tallocs -> ");
         for(j = 0; j < iterator->maxAllocs; ++j) {
             fprintf(stderr, "%d(%d) ", j, iterator->currentAllocs[j]);
