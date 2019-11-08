@@ -28,6 +28,7 @@ int main() {
     testRequestArrayInit();
     testResourceDescriptorInit();
     testProcessSendRequest();
+    testBuildMatrices();
 
     return 0;
 }
@@ -220,19 +221,30 @@ void testProcessSendRequest() {
 
     initOssProcessManager();
     Request* req = malloc(shmRequestSize);
+    ResourceDescriptor* desc = malloc(shmResourceDescSize);
+    initResourceDescriptorArray(desc);
+    initRequestArray(req);
 
     fprintf(stderr, "Request send tests:\n");
 
-    for(i = 0; i < 25; ++i) {
-        spawnDummyProcess();
-    }
+    printAllResDesc(desc);
 
-    //Request testing here
+    for(i = 0; i < 10; ++i) {
+        spawnDummyProcess();
+        usrOnSpawnRequest(getPidOfIndex(i), req, desc);
+        printRequest(req, getPidOfIndex(i));
+    }
 
     destroyProcessManager();
     free(req);
+    free(desc);
 
     fprintf(stderr, "-----\n");
+}
+
+void testBuildMatrices() {
+    int testMatrix[MAX_CHILD_PROCESSES][MAX_RESOURCES] ;   
+    printMatrix(stderr, testMatrix);
 }
 
 void nonConcurrentProgramSimulation() {

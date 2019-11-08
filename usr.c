@@ -53,6 +53,7 @@ int main(int arg, char* argv[]) {
                 advanceClock(shmClockPtr, 0, 1);
 
             sem_post(shmSemPtr);
+
         }
         
         //Check if a signal was received

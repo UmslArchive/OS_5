@@ -56,6 +56,7 @@ void initResourceDescriptorArray(ResourceDescriptor* resArray);
 void ossRetrieveRequests(Request* reqArray);
 int isSafeState();
 void allocRequests(Request* reqArray);
+void updateClaimMatrix(Request* reqArray);
 
 //usr process resource functions:
 void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray);
@@ -67,5 +68,6 @@ void printRequest(Request* reqArray, pid_t pid);
 void printResDesc(ResourceDescriptor* resArray, int resIndex);
 void printAllRequests(Request* reqArray);
 void printAllResDesc(ResourceDescriptor* resArray);
+void printMatrix(FILE* fp, int mat[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
 
 #endif

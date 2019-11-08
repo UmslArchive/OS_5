@@ -108,27 +108,36 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
     Request* reqIterator = getProcessRequestIterator(reqArray, pid);
     ResourceDescriptor* descIterator = descArray;
 
-    //Randomly generate which resource a process will like to have
-    int resourceIndex = rand() % MAX_RESOURCES;
-
-    //Set the resource description iterator
-    int i;
-    for(i = 0; i < resourceIndex; ++i) {
+    if(reqIterator == NULL)
+        return;
+    
+    //Randomly generate the amount max claim of a process for the each resource
+    int claim, i;
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        claim = rand() % (descIterator->maxAllocs + 1); //0 to 20
+        reqIterator->maxClaims[i] = claim;
         descIterator++;
     }
-    
-    //Randomly generate the amount max claim of a process for the generated resource
-    int claim;
-    for(i = 0; i < MAX_RESOURCES; ++i) {
-        claim = rand() % (descIterator->maxAllocs + 1);
-        reqIterator->maxClaims[i] = claim;
+
+    //Randomly generate which resource a process will like to have
+    int resourceIndex;
+    int valid = 0;
+    while(valid == 0) {
+        resourceIndex = rand() % MAX_RESOURCES;
+        
+        //Check if valid
+        if(reqIterator->maxClaims[resourceIndex] != 0)
+            valid = 1;
     }
+
+    //Set claim correspondence
+    claim = reqIterator->maxClaims[resourceIndex];
 
     reqIterator->pid = pid;
     reqIterator->resource = resourceIndex;
     reqIterator->isRelease = 0;
+    reqIterator->amount = rand() % claim + 1; //1 to 20
     reqIterator->reqState = UNPROCESSED;
-    reqIterator->amount = rand() % claim + 1;
 }
 
 //Function places validated requests into the request array for a process.
@@ -138,6 +147,25 @@ int usrProcessSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount
     Request* iterator = getProcessRequestIterator(reqArray, pid);
 
     return 0;
+}
+
+void updateClaimMatrix(Request* reqArray) {
+    Request* iterator = reqArray;
+
+    if(reqArray == NULL) {
+        fprintf(stderr, "ERROR: updateClaimMatrix : reqArray NULL\n");
+        return;
+    }
+
+    int i, j;
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        if(iterator->reqState != NULL_PROCESS) {
+            for(j = 0; j < MAX_RESOURCES; ++j) {
+                claimMat[i][j] = iterator->maxClaims[j];
+            }
+        }
+        iterator++;
+    }
 }
 
 void printRequest(Request* reqArray, pid_t pid) {
@@ -158,7 +186,7 @@ void printRequest(Request* reqArray, pid_t pid) {
     int i;
     fprintf(stderr, "\tMC: ");
     for(i = 0; i < MAX_RESOURCES; ++i) {
-        fprintf(stderr, "%d ", iterator->maxClaims[i]);
+        fprintf(stderr, "%d(%d) ",i,  iterator->maxClaims[i]);
     }
     fprintf(stderr, "\n");
 }
@@ -196,7 +224,7 @@ void printAllRequests(Request* reqArray) {
 
         fprintf(stderr, "\tMC: ");
         for(j = 0; j < MAX_RESOURCES; ++j) {
-            fprintf(stderr, "%d ", iterator->maxClaims[j]);
+            fprintf(stderr, "%d(%d) ",j,  iterator->maxClaims[j]);
         }
         fprintf(stderr, "\n");
 
@@ -215,5 +243,24 @@ void printAllResDesc(ResourceDescriptor* resArray) {
         }
         fprintf(stderr, "\n");
         iterator++;
+    }
+}
+
+void printMatrix(FILE* fp, int mat[MAX_CHILD_PROCESSES][MAX_RESOURCES]) {
+    int i, j;
+
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        fprintf(fp, "    R%.2d", i);
+    }
+
+    fprintf(fp, "\n");
+
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        fprintf(fp, "P%.2d ", i);
+        for(j = 0; j < MAX_RESOURCES; ++j) {
+            mat[i][j] = 0;
+            fprintf(fp, "%.2d     ", mat[i][j]);
+        }
+        fprintf(fp, "\n");
     }
 }
