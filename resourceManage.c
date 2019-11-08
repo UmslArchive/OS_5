@@ -116,15 +116,30 @@ Request* getProcessRequestIterator(Request* reqArray, pid_t pid) {
     return iterator;
 }
 
-void getRequests(Request* reqArray) {
-    //for each request place it into the SystemState
+ResourceDescriptor* getResourceDescriptorIterator(ResourceDescriptor* resArray, int resource) {
+    if(resource < 0 || resource >= MAX_RESOURCES) {
+        fprintf(stderr, "ERROR: Invalid resource selected. Returning NULL iterator.\n");
+        return NULL;
+    }
+
+    int i;
+    ResourceDescriptor* iterator = resArray;
+    for(i = 0; i < resource; ++i) {
+        iterator++;
+    }
+
+    return iterator;
 }
 
 int isSafeState() {
     return 0;
 }
 
-void allocRequests(Request* reqArray) {
+void approveRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid){
+
+}
+
+void denyRequest(Request* reqArray, pid_t pid) {
 
 }
 

@@ -58,25 +58,25 @@ typedef struct queue_struct {
 //Initialization
 void initRequestArray(Request* reqArray);
 void initResourceDescriptorArray(ResourceDescriptor* resArray);
+void initMatrix(int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
+void initVector(int availVec[]);
+void initMatricesAndVectors();
 
 //oss process resource functions:
 int isSafeState();
 void allocRequests(Request* reqArray);
 void updateClaimMatrix(Request* reqArray);
 void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray);
-void initMatrix(int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
-void initVector(int availVec[]);
-void initMatricesAndVectors();
-
 void approveRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid);
 void denyRequest(Request* reqArray, pid_t pid);
 
 //usr process resource functions:
 void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray);
-int usrSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount);
+int usrSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount); //TODO
 
 //Utility:
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid);
+ResourceDescriptor* getResourceDescriptorIterator(ResourceDescriptor* resArray, int resource);
 void printRequest(Request* reqArray, pid_t pid);
 void printResDesc(ResourceDescriptor* resArray, int resIndex);
 void printAllRequests(Request* reqArray);
