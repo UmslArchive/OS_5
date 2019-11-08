@@ -28,7 +28,7 @@ int main() {
     testRequestArrayInit();
     testResourceDescriptorInit();
     testProcessSendRequest();
-    testBuildMatrices();
+    //testBuildMatrices();
 
     return 0;
 }
@@ -218,6 +218,8 @@ void testResourceDescriptorInit() {
 
 void testProcessSendRequest() {
     int i;
+    int testMatrix[MAX_CHILD_PROCESSES][MAX_RESOURCES];
+    initMatrix(testMatrix);
 
     initOssProcessManager();
     Request* req = malloc(shmRequestSize);
@@ -229,11 +231,14 @@ void testProcessSendRequest() {
 
     printAllResDesc(desc);
 
-    for(i = 0; i < 10; ++i) {
+    for(i = 0; i < 18; ++i) {
         spawnDummyProcess();
         usrOnSpawnRequest(getPidOfIndex(i), req, desc);
-        printRequest(req, getPidOfIndex(i));
+        updateClaimMatrix(req, testMatrix);
     }
+
+    printAllRequests(req);
+    printMatrix(stderr, testMatrix);
 
     destroyProcessManager();
     free(req);
@@ -243,7 +248,8 @@ void testProcessSendRequest() {
 }
 
 void testBuildMatrices() {
-    int testMatrix[MAX_CHILD_PROCESSES][MAX_RESOURCES] ;   
+    int testMatrix[MAX_CHILD_PROCESSES][MAX_RESOURCES];
+    initMatrix(testMatrix);
     printMatrix(stderr, testMatrix);
 }
 

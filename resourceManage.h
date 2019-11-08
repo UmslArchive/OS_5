@@ -56,7 +56,10 @@ void initResourceDescriptorArray(ResourceDescriptor* resArray);
 void ossRetrieveRequests(Request* reqArray);
 int isSafeState();
 void allocRequests(Request* reqArray);
-void updateClaimMatrix(Request* reqArray);
+void updateClaimMatrix(Request* reqArray, int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
+void initMatrix(int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
+void initVector(int availVec[]);
+void initMatricesAndVectors();
 
 //usr process resource functions:
 void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray);

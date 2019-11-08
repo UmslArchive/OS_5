@@ -25,6 +25,31 @@ static int resVec[MAX_RESOURCES];
 //Stores current total available resources
 static int availVec[MAX_RESOURCES];
 
+void initMatrix(int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]) {
+    int i, j;
+
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        for(j = 0; j < MAX_RESOURCES; ++j) {
+            matrix[i][j] = 0;          
+        }
+    }
+}
+
+void initVector(int vector[]) {
+    int i;
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        vector[i] = 0;
+    }
+}
+
+void initMatricesAndVectors() {
+    initMatrix(stateMat);
+    initMatrix(allocMat);
+    initMatrix(claimMat);
+    initVector(resVec);
+    initVector(availVec);
+}
+
 void initRequestArray(Request* reqArray) {
     int i, j;
     Request* iterator = reqArray;
@@ -149,7 +174,7 @@ int usrProcessSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount
     return 0;
 }
 
-void updateClaimMatrix(Request* reqArray) {
+void updateClaimMatrix(Request* reqArray, int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]) {
     Request* iterator = reqArray;
 
     if(reqArray == NULL) {
@@ -161,7 +186,7 @@ void updateClaimMatrix(Request* reqArray) {
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         if(iterator->reqState != NULL_PROCESS) {
             for(j = 0; j < MAX_RESOURCES; ++j) {
-                claimMat[i][j] = iterator->maxClaims[j];
+                matrix[i][j] = iterator->maxClaims[j];
             }
         }
         iterator++;
@@ -186,7 +211,7 @@ void printRequest(Request* reqArray, pid_t pid) {
     int i;
     fprintf(stderr, "\tMC: ");
     for(i = 0; i < MAX_RESOURCES; ++i) {
-        fprintf(stderr, "%d(%d) ",i,  iterator->maxClaims[i]);
+        fprintf(stderr, "%d(%d) ", i,  iterator->maxClaims[i]);
     }
     fprintf(stderr, "\n");
 }
@@ -215,7 +240,8 @@ void printAllRequests(Request* reqArray) {
     int i, j;
     Request* iterator = reqArray;
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-        fprintf(stderr, "REQUEST from %d: res=%d amt=%d at %d:%d",
+        fprintf(stderr, "[%.2d] REQUEST from %d: res=%d amt=%d at %d:%d",
+        i,
         iterator->pid, 
         iterator->resource, 
         iterator->amount, 
@@ -258,7 +284,6 @@ void printMatrix(FILE* fp, int mat[MAX_CHILD_PROCESSES][MAX_RESOURCES]) {
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         fprintf(fp, "P%.2d ", i);
         for(j = 0; j < MAX_RESOURCES; ++j) {
-            mat[i][j] = 0;
             fprintf(fp, "%.2d     ", mat[i][j]);
         }
         fprintf(fp, "\n");
