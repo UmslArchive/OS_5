@@ -63,10 +63,10 @@ void initVector(int availVec[]);
 void initMatricesAndVectors();
 
 //oss process resource functions:
-int isSafeState();
-void allocRequests(Request* reqArray);
 void updateClaimMatrix(Request* reqArray);
+void updateAvailableVector(ResourceDescriptor* resArray);
 void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray);
+int isSafeState();
 void approveRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid);
 void denyRequest(Request* reqArray, pid_t pid);
 

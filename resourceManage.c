@@ -209,6 +209,32 @@ void updateClaimMatrix(Request* reqArray) {
     }
 }
 
+void updateAvailableVector(ResourceDescriptor* resArray) {
+    ResourceDescriptor* iterator = resArray;
+    
+    
+    //Max - current allocs for each resource
+    int i, j;
+    int available, numAllocd;
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        available = 0;
+        numAllocd = 0;
+
+        //Count number of non-zero elements
+        for(j = 0; j < iterator->maxAllocs; ++j) {
+            if(iterator->currentAllocs[j] != 0) {
+                ++numAllocd;
+            }
+        }
+        
+        //Calculate still available then put into availVec
+        available = iterator->maxAllocs - numAllocd;
+        availVec[i] = available;
+        
+        iterator++;
+    }
+}
+
 void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
     Request* iterator = reqArray;
     int i, j;
@@ -228,7 +254,7 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
             stateMat[i][iterator->resource] = iterator->amount;
 
             //Check for safety
-            if(isSafeState()) {
+            if(isSafeState() == 1) {
                 approveRequest(reqArray, resArray, iterator->pid);
             }
             else {
@@ -238,7 +264,6 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
         }
         iterator++;
     }
-    fprintf(stderr, "Number of requests: %d\n", count);
 }
 
 void printRequest(Request* reqArray, pid_t pid) {

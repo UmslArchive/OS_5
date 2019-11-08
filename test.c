@@ -232,6 +232,11 @@ void testProcessSendRequest() {
     fprintf(stderr, "RES ");
     printVector(stderr, resVec, MAX_RESOURCES);
 
+    updateAvailableVector(desc);
+
+    fprintf(stderr, "AVA ");
+    printVector(stderr, availVec, MAX_RESOURCES);
+
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         spawnDummyProcess();
         usrOnSpawnRequest(getPidOfIndex(i), req, desc);
