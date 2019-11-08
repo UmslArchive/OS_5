@@ -65,7 +65,7 @@ void initMatricesAndVectors();
 //oss process resource functions:
 void updateClaimMatrix(Request* reqArray);
 void updateAvailableVector(ResourceDescriptor* resArray);
-void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray);
+void ossProcessRequest(Request* reqArray, ResourceDescriptor* resArray);
 int isSafeState();
 void approveRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid);
 void denyRequest(Request* reqArray, pid_t pid);
@@ -83,5 +83,6 @@ void printAllRequests(Request* reqArray);
 void printAllResDesc(ResourceDescriptor* resArray);
 void printMatrix(FILE* fp, int mat[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
 void printVector(FILE* fp, int vec[], int size);
+void copyMatrix(int src[MAX_CHILD_PROCESSES][MAX_RESOURCES], int dest[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
 
 #endif

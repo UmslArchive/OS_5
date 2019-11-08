@@ -235,12 +235,12 @@ void updateAvailableVector(ResourceDescriptor* resArray) {
     }
 }
 
-void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
+void ossProcessRequest(Request* reqArray, ResourceDescriptor* resArray) {
     Request* iterator = reqArray;
     int i, j;
     int count = 0;
 
-    //First, state matrix become copy of allocMatrix
+    //First, state matrix become copy of alloc matrix
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         for(j = 0; j < MAX_RESOURCES; ++j) {
             stateMat[i][j] = allocMat[i][j];
@@ -370,4 +370,13 @@ void printVector(FILE* fp, int vec[], int size) {
         fprintf(fp, "%.2d ", vec[i]);
     }
     fprintf(fp, "\n");
+}
+
+void copyMatrix(int src[MAX_CHILD_PROCESSES][MAX_RESOURCES], int dest[MAX_CHILD_PROCESSES][MAX_RESOURCES]){
+    int i, j;
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        for(j = 0; j < MAX_RESOURCES; ++j) {
+            dest[i][j] = src[i][j];
+        }
+    }
 }
