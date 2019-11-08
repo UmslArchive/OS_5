@@ -236,12 +236,18 @@ void testProcessSendRequest() {
         updateClaimMatrix(req);
     }
 
-    updateStateMatrix(req);
 
     printAllRequests(req);
 
     fprintf(stderr, "CLAIM MATRIX:\n");
     printMatrix(stderr, claimMat);
+
+    fprintf(stderr, "\n");
+
+    printAllRequests(req);
+
+    updateStateMatrix(req);
+
 
     fprintf(stderr, "STATE MATRIX:\n");
     printMatrix(stderr, stateMat);

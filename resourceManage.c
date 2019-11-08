@@ -195,8 +195,17 @@ void updateClaimMatrix(Request* reqArray) {
 
 void updateStateMatrix(Request* reqArray) {
     Request* iterator = reqArray;
-    int i;
+    int i, j;
     int count = 0;
+
+    //First become copy of allocMatrix
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        for(j = 0; j < MAX_RESOURCES; ++j) {
+            stateMat[i][j] = allocMat[i][j];
+        }
+    }
+
+    //Read in current set of requests
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         if(iterator->reqState == UNPROCESSED) {
             stateMat[i][iterator->resource] = iterator->amount;
