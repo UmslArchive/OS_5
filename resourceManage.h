@@ -84,5 +84,6 @@ void printResDesc(ResourceDescriptor* resArray, int resIndex);
 void printAllRequests(Request* reqArray);
 void printAllResDesc(ResourceDescriptor* resArray);
 void printMatrix(FILE* fp, int mat[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
+void printVector(FILE* fp, int vec[], int size);
 
 #endif

@@ -218,7 +218,7 @@ void testResourceDescriptorInit() {
 
 void testProcessSendRequest() {
     int i;
-    initMatrix(claimMat);
+    initMatricesAndVectors();
 
     initOssProcessManager();
     Request* req = malloc(shmRequestSize);
@@ -229,6 +229,8 @@ void testProcessSendRequest() {
     fprintf(stderr, "Request send tests:\n");
 
     printAllResDesc(desc);
+    fprintf(stderr, "RES ");
+    printVector(stderr, resVec, MAX_RESOURCES);
 
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         spawnDummyProcess();
@@ -251,7 +253,6 @@ void testProcessSendRequest() {
 
     fprintf(stderr, "STATE MATRIX:\n");
     printMatrix(stderr, stateMat);
-
 
     destroyProcessManager();
     free(req);

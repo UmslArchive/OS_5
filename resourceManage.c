@@ -78,6 +78,7 @@ void initResourceDescriptorArray(ResourceDescriptor* resArray){
     ResourceDescriptor* iterator = resArray;
     for(i = 0; i < MAX_RESOURCES; ++i) {
         iterator->maxAllocs = rand() % 10 + 1;
+        resVec[i] = iterator->maxAllocs;
 
         for(j = 0; j < MAX_RESOURCE_INSTANCES; ++j) {
             iterator->currentAllocs[j] = 0;
@@ -311,4 +312,13 @@ void printMatrix(FILE* fp, int mat[MAX_CHILD_PROCESSES][MAX_RESOURCES]) {
         }
         fprintf(fp, "\n");
     }
+}
+
+void printVector(FILE* fp, int vec[], int size) {
+    int i;
+    fprintf(fp, "VECTOR: ");
+    for(i = 0; i < size; ++i) {
+        fprintf(fp, "%.2d ", vec[i]);
+    }
+    fprintf(fp, "\n");
 }
