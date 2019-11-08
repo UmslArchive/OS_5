@@ -60,16 +60,14 @@ void initRequestArray(Request* reqArray);
 void initResourceDescriptorArray(ResourceDescriptor* resArray);
 
 //oss process resource functions:
-void ossRetrieveRequests(Request* reqArray);
 int isSafeState();
 void allocRequests(Request* reqArray);
 void updateClaimMatrix(Request* reqArray);
-void updateStateMatrix(Request* reqArray);
+void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray);
 void initMatrix(int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
 void initVector(int availVec[]);
 void initMatricesAndVectors();
 
-void processRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid);
 void approveRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid);
 void denyRequest(Request* reqArray, pid_t pid);
 

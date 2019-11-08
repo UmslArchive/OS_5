@@ -194,22 +194,31 @@ void updateClaimMatrix(Request* reqArray) {
     }
 }
 
-void updateStateMatrix(Request* reqArray) {
+void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
     Request* iterator = reqArray;
     int i, j;
     int count = 0;
 
-    //First become copy of allocMatrix
+    //First, state matrix become copy of allocMatrix
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         for(j = 0; j < MAX_RESOURCES; ++j) {
             stateMat[i][j] = allocMat[i][j];
         }
     }
 
-    //Read in current set of requests
+    //Process unproccessed requests
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         if(iterator->reqState == UNPROCESSED) {
+            //Stick it in the state matrix
             stateMat[i][iterator->resource] = iterator->amount;
+
+            //Check for safety
+            if(isSafeState()) {
+                approveRequest(reqArray, resArray, iterator->pid);
+            }
+            else {
+                denyRequest(reqArray, iterator->pid);
+            }
             ++count;
         }
         iterator++;
