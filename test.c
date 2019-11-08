@@ -64,7 +64,7 @@ void testTimeDifference() {
     result = timeDifference(&first, &second);
     printClock(&result);
 
-    //Test underflow
+    //Test underflow (Fails)
     first.seconds = 1;
     first.nanoseconds = 0;
     second.seconds = 2;
