@@ -235,30 +235,29 @@ void updateAvailableVector(ResourceDescriptor* resArray) {
     }
 }
 
-void ossProcessRequest(Request* reqArray, ResourceDescriptor* resArray) {
+void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
     Request* iterator = reqArray;
     int i, j;
     int count = 0;
 
-    //First, state matrix become copy of alloc matrix
-    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-        for(j = 0; j < MAX_RESOURCES; ++j) {
-            stateMat[i][j] = allocMat[i][j];
-        }
-    }
-
     //Process unproccessed requests
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+
         if(iterator->reqState == UNPROCESSED) {
+            //Make state matrix a copy of allocd matrix
+            copyMatrix(allocMat, stateMat);
+
             //Stick it in the state matrix
             stateMat[i][iterator->resource] = iterator->amount;
 
             //Check for safety
             if(isSafeState() == 1) {
                 approveRequest(reqArray, resArray, iterator->pid);
+                iterator->reqState = APPROVED;
             }
             else {
                 denyRequest(reqArray, iterator->pid);
+                iterator->reqState = DENIED;
             }
             ++count;
         }
