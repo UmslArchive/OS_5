@@ -11,19 +11,19 @@ const size_t shmResourceDescSize = MAX_RESOURCES * sizeof(ResourceDescriptor);
 const size_t shmRequestSize = MAX_CHILD_PROCESSES * sizeof(Request);
 
 //Stores alloc matrix updated with newest set of requests (hypothetical future state)
-static int stateMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
+int stateMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
 
 //Stores current resource allocs of all processes
-static int allocMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
+int allocMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
 
 //Stores current max claims of all processes
-static int claimMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
+int claimMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
 
 //Stores max total resources available
-static int resVec[MAX_RESOURCES];
+int resVec[MAX_RESOURCES];
 
 //Stores current total available resources
-static int availVec[MAX_RESOURCES];
+int availVec[MAX_RESOURCES];
 
 void initMatrix(int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]) {
     int i, j;
@@ -168,13 +168,13 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
 //Function places validated requests into the request array for a process.
 //Valid meaning doesn't attempt anything impossible, but could still be an
 //unsafe request. OSS will check for safety, not child process.
-int usrProcessSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount) {
+int usrSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount) {
     Request* iterator = getProcessRequestIterator(reqArray, pid);
 
     return 0;
 }
 
-void updateClaimMatrix(Request* reqArray, int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]) {
+void updateClaimMatrix(Request* reqArray) {
     Request* iterator = reqArray;
 
     if(reqArray == NULL) {
@@ -186,11 +186,25 @@ void updateClaimMatrix(Request* reqArray, int matrix[MAX_CHILD_PROCESSES][MAX_RE
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         if(iterator->reqState != NULL_PROCESS) {
             for(j = 0; j < MAX_RESOURCES; ++j) {
-                matrix[i][j] = iterator->maxClaims[j];
+                claimMat[i][j] = iterator->maxClaims[j];
             }
         }
         iterator++;
     }
+}
+
+void updateStateMatrix(Request* reqArray) {
+    Request* iterator = reqArray;
+    int i;
+    int count = 0;
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        if(iterator->reqState == UNPROCESSED) {
+            stateMat[i][iterator->resource] = iterator->amount;
+            ++count;
+        }
+        iterator++;
+    }
+    fprintf(stderr, "Number of requests: %d\n", count);
 }
 
 void printRequest(Request* reqArray, pid_t pid) {
@@ -282,7 +296,7 @@ void printMatrix(FILE* fp, int mat[MAX_CHILD_PROCESSES][MAX_RESOURCES]) {
     fprintf(fp, "\n");
 
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-        fprintf(fp, "P%.2d ", i);
+        fprintf(fp, "P%.2d  ", i);
         for(j = 0; j < MAX_RESOURCES; ++j) {
             fprintf(fp, "%.2d     ", mat[i][j]);
         }

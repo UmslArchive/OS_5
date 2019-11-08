@@ -218,8 +218,7 @@ void testResourceDescriptorInit() {
 
 void testProcessSendRequest() {
     int i;
-    int testMatrix[MAX_CHILD_PROCESSES][MAX_RESOURCES];
-    initMatrix(testMatrix);
+    initMatrix(claimMat);
 
     initOssProcessManager();
     Request* req = malloc(shmRequestSize);
@@ -231,14 +230,22 @@ void testProcessSendRequest() {
 
     printAllResDesc(desc);
 
-    for(i = 0; i < 18; ++i) {
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         spawnDummyProcess();
         usrOnSpawnRequest(getPidOfIndex(i), req, desc);
-        updateClaimMatrix(req, testMatrix);
+        updateClaimMatrix(req);
     }
 
+    updateStateMatrix(req);
+
     printAllRequests(req);
-    printMatrix(stderr, testMatrix);
+
+    fprintf(stderr, "CLAIM MATRIX:\n");
+    printMatrix(stderr, claimMat);
+
+    fprintf(stderr, "STATE MATRIX:\n");
+    printMatrix(stderr, stateMat);
+
 
     destroyProcessManager();
     free(req);
@@ -263,7 +270,7 @@ void nonConcurrentProgramSimulation() {
         ossRetrieveRequests();
         
         if(state == APPROVED || DENIED)
-        usrProcessSendRequest(); */
+        usrSendRequest(); */
 
 
 }

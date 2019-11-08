@@ -12,14 +12,21 @@
 #define MAX_RESOURCES 20
 #define MAX_RESOURCE_INSTANCES 10
 
+//Matrices and vectors
+extern int stateMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
+extern int allocMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
+extern int claimMat[MAX_CHILD_PROCESSES][MAX_RESOURCES];
+extern int resVec[MAX_RESOURCES];
+extern int availVec[MAX_RESOURCES];
+
 //UNPROCESSED - request sent but not yet received by oss.
 //DENIED - request received and denied by oss. usr process will sleep.
 //APPROVED - Request granted and alloc'd. Ready for new request.
 //NULL_PROCESS - There is no associated active process in the process manager.
 typedef enum request_state { 
-    UNPROCESSED, 
-    DENIED, 
-    APPROVED, 
+    UNPROCESSED,
+    DENIED,
+    APPROVED,
     NULL_PROCESS
 } ReqState;
 
@@ -56,14 +63,19 @@ void initResourceDescriptorArray(ResourceDescriptor* resArray);
 void ossRetrieveRequests(Request* reqArray);
 int isSafeState();
 void allocRequests(Request* reqArray);
-void updateClaimMatrix(Request* reqArray, int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
+void updateClaimMatrix(Request* reqArray);
+void updateStateMatrix(Request* reqArray);
 void initMatrix(int matrix[MAX_CHILD_PROCESSES][MAX_RESOURCES]);
 void initVector(int availVec[]);
 void initMatricesAndVectors();
 
+void processRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid);
+void approveRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid);
+void denyRequest(Request* reqArray, pid_t pid);
+
 //usr process resource functions:
 void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray);
-int usrProcessSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount);
+int usrSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount);
 
 //Utility:
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid);
