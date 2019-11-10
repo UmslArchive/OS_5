@@ -75,14 +75,18 @@ void initResourceDescriptorArray(ResourceDescriptor* resArray){
     int i, j;
     int isShareable;
 
+    int arrayToCopy[MAX_RESOURCE_INSTANCES];
+    for(i = 0; i < MAX_RESOURCE_INSTANCES; ++i) {
+        arrayToCopy[i] = 0;
+    }
+
     ResourceDescriptor* iterator = resArray;
     for(i = 0; i < MAX_RESOURCES; ++i) {
         iterator->maxAllocs = rand() % 10 + 1;
         resVec[i] = iterator->maxAllocs;
 
-        for(j = 0; j < MAX_RESOURCE_INSTANCES; ++j) {
-            iterator->currentAllocs[j] = 0;
-        }
+        //init the current alloc array
+        memcpy(iterator->currentAllocs, arrayToCopy, sizeof(iterator->currentAllocs));
 
         //20% of resources are shareable
         isShareable = rand() % 100;
@@ -132,7 +136,7 @@ ResourceDescriptor* getResourceDescriptorIterator(ResourceDescriptor* resArray, 
 }
 
 int isSafeState(Request* req) {
-    int i, j, k, p;
+int i, j, k, p;
     int need[MAX_CHILD_PROCESSES][MAX_RESOURCES];
 
     //Vector to contain hypothetical availabilities
@@ -149,25 +153,25 @@ int isSafeState(Request* req) {
             hypoAvailVec[j] -= stateMat[i][j];
         }
     }
-  
+
     // Function to calculate need matrix 
     // Calculating Need of each P 
     for (i = 0 ; i < MAX_CHILD_PROCESSES ; i++) 
         for (j = 0 ; j < MAX_RESOURCES ; j++) 
             need[i][j] = claimMat[i][j] - stateMat[i][j]; 
-  
+
     // Mark all processes as infinish 
     //Init beenProcessed
     int beenProcessed[MAX_CHILD_PROCESSES];
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         beenProcessed[i] = 0;
     }
-  
+
     // Make a copy of available resources 
     int work[MAX_RESOURCES]; 
     for (i = 0; i < MAX_RESOURCES ; i++) 
         work[i] = hypoAvailVec[i];
-  
+
     // While all processes are not finished 
     // or system is not in safe state. 
     int count = 0; 
@@ -189,7 +193,7 @@ int isSafeState(Request* req) {
                 for (j = 0; j < MAX_RESOURCES; j++) 
                     if (need[p][j] > work[j]) 
                         break; 
-  
+
                 // If all needs of p were satisfied. 
                 if (j == MAX_RESOURCES) 
                 { 
@@ -198,17 +202,17 @@ int isSafeState(Request* req) {
                     // resources i.e.free the resources 
                     for (k = 0 ; k < MAX_RESOURCES ; k++) 
                         work[k] += stateMat[p][k]; 
-  
+
                     count++;
-  
+
                     // Mark this p as finished 
                     beenProcessed[p] = 1; 
-  
+
                     found = 1;
                 } 
             } 
         } 
-  
+
         // If we could not find a next process in safe 
         // sequence. 
         if (found == 0) 
@@ -217,108 +221,6 @@ int isSafeState(Request* req) {
         } 
     }  
     return 1; 
-
-    /* int i, j;
-    
-    //Vector to contain processes which have already been determined possible to clear
-    int beenProcessed[MAX_CHILD_PROCESSES];
-
-    //Vector to contain hypothetical availabilities
-    int hypoAvailVec[MAX_RESOURCES];
-
-    //Init beenProcessed
-    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-        beenProcessed[i] = 0;
-    }
-
-    //Set hypoAvailVec = resVec
-    for(i = 0; i < MAX_RESOURCES; ++i) {
-        hypoAvailVec[i] = resVec[i];
-    }
-
-    //Subtract away "allocd" resources
-    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-        for(j = 0; j < MAX_RESOURCES; ++j) {
-            hypoAvailVec[j] -= stateMat[i][j];
-        }
-    }
-
-    printVector(stderr, hypoAvailVec, MAX_RESOURCES);
-
-    //Check if possible
-    if(req->amount > hypoAvailVec[req->resource]) {
-        return 0;
-    }
-
-    //Check if a path to completion exists
-    int zerod;
-    int full;
-    int possible = 1;
-    while(possible == 1) {
-        zerod = 1;
-        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-            if(beenProcessed[i] == 0) {
-
-                for(j = 0; j < MAX_RESOURCES; ++j) {
-                    hypoAvailVec[j] -= (claimMat[i][j] - stateMat[i][j]);
-                }
-
-                for(j = 0; j < MAX_RESOURCES; ++j) {
-                    //if need more than available
-
-                    fprintf(stderr, "(%d, %d) C%d - S%d > A%d\t",i, j, claimMat[i][j], stateMat[i][j], hypoAvailVec[j]);
-
-                    if((claimMat[i][j] - stateMat[i][j]) > hypoAvailVec[j]) {
-                        fprintf(stderr, "yes\n");
-                        zerod = 0;
-                        break;
-                    }
-                    else {
-                        fprintf(stderr, "no\n");
-                    }
-                }
-
-                if(zerod == 1) {
-                    beenProcessed[i] = 1;
-
-                    //Add back to hypo avail vec
-                    for(j = 0; j < MAX_RESOURCES; ++j) {
-                        hypoAvailVec[j] += claimMat[i][j];
-                        stateMat[i][j] = 0;
-                    }
-
-                    break;
-                }
-                else {
-                    for(j = 0; j < MAX_RESOURCES; ++j) {
-                        hypoAvailVec[j] += (claimMat[i][j] - stateMat[i][j]);
-                    }
-                }
-
-                if(i != MAX_CHILD_PROCESSES - 1)
-                    zerod = 1;
-
-            }
-        }
-
-        //check for full
-        full = 1;
-        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
-            if(beenProcessed[i] == 0) {
-                full = 0;
-                break;
-            }
-        }
-
-        if(zerod == 0 && full == 0) {
-            return 0;
-        }
-
-
-        if(full == 1) {
-           return 1;
-        }
-    } */
 }
 
 void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_t pid){
@@ -492,6 +394,7 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
             //Stick it in the state matrix
             stateMat[i][iterator->resource] += iterator->amount;
 
+            fprintf(stderr, "state mat\n");
             printMatrix(stderr, stateMat);
 
             //Check for safety

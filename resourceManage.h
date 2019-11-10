@@ -34,7 +34,7 @@ typedef enum request_state {
 //One for each resource
 typedef struct res_desc_struct {
     unsigned int maxAllocs;
-    pid_t currentAllocs[MAX_CHILD_PROCESSES];
+    pid_t currentAllocs[MAX_RESOURCE_INSTANCES];
     int shareable;
 } ResourceDescriptor;
 
