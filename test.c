@@ -266,6 +266,11 @@ void testProcessSendRequest() {
     updateAllocMatrix(desc);
     printMatrix(stderr, allocMat);
 
+    updateAvailableVector(desc);
+
+    fprintf(stderr, "AVA ");
+    printVector(stderr, availVec, MAX_RESOURCES);
+
     //Cleanup
     destroyProcessManager();
     free(req);

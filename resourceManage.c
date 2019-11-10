@@ -131,8 +131,86 @@ ResourceDescriptor* getResourceDescriptorIterator(ResourceDescriptor* resArray, 
     return iterator;
 }
 
-int isSafeState() {
-    return 1;
+int isSafeState(Request* req) {
+    int i, j;
+    
+    //Vector to contain processes which have already been determined possible to clear
+    int beenProcessed[MAX_CHILD_PROCESSES];
+
+    //Vector to contain hypothetical availabilities
+    int hypoAvailVec[MAX_RESOURCES];
+
+    //Init beenProcessed
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        beenProcessed[i] = 0;
+    }
+
+    //Set hypoAvailVec = resVec
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        hypoAvailVec[i] = resVec[i];
+    }
+
+    //Subtract away "allocd" resources
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        for(j = 0; j < MAX_RESOURCES; ++j) {
+            hypoAvailVec[j] -= stateMat[i][j];
+        }
+    }
+
+    //Check if possible
+    if(req->amount > hypoAvailVec[req->resource]) {
+        return 0;
+    }
+
+    //Check if a path to completion exists
+    int zerod;
+    int full;
+    int possible = 1;
+    while(possible == 1) {
+        zerod = 1;
+        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+            if(beenProcessed[i] == 0) {
+                for(j = 0; j < MAX_RESOURCES; ++j) {
+                    //if need more than available
+                    if(claimMat[i][j] - stateMat[i][j] > hypoAvailVec[j]) {
+                        zerod = 0;
+                        break;
+                    }
+                }
+
+                if(zerod == 1) {
+                    beenProcessed[i] = 1;
+
+                    //Add back to hypo avail vec
+                    for(j = 0; j < MAX_RESOURCES; ++j) {
+                        hypoAvailVec[j] += claimMat[i][j];
+                        stateMat[i][j] = 0;
+                    }
+
+                    break;
+                }
+
+                if(i != MAX_CHILD_PROCESSES - 1)
+                    zerod = 1;
+
+            }
+        }
+
+        //check for full
+        full = 1;
+        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+            if(beenProcessed[i] == 0) {
+                full = 0;
+                break;
+            }
+        }
+
+        if(zerod == 0 && full == 0)
+            return 0;
+
+        if(full == 1)
+           return 1;
+    }
 }
 
 void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_t pid){
@@ -305,11 +383,13 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
             stateMat[i][iterator->resource] += iterator->amount;
 
             //Check for safety
-            if(isSafeState() == 1) {
+            if(isSafeState(iterator) == 1) {
+                fprintf(stderr, "approved\n");
                 approveRequest(iterator, resArray, iterator->pid);
                 iterator->reqState = APPROVED;
             }
             else {
+                fprintf(stderr, "denied\n");
                 denyRequest(iterator, iterator->pid);
                 iterator->reqState = DENIED;
             }

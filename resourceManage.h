@@ -28,7 +28,7 @@ typedef enum request_state {
     DENIED,
     APPROVED,
     NULL_PROCESS,
-    FINISHED
+    FINISHED,
 } ReqState;
 
 //One for each resource
@@ -69,7 +69,7 @@ void updateClaimMatrix(Request* reqArray);
 void updateAllocMatrix(ResourceDescriptor* resArray);
 void updateAvailableVector(ResourceDescriptor* resArray);
 void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray);
-int isSafeState();
+int isSafeState(Request* req);
 void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_t pid);
 void denyRequest(Request* requestIterator, pid_t pid);
 
