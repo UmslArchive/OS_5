@@ -9,6 +9,8 @@
 
 int main(int arg, char* argv[]) {
 
+    int indexInActivePsArray;
+
     //Initializations:
 
     srand(time(NULL));
@@ -34,6 +36,10 @@ int main(int arg, char* argv[]) {
     timeLimit.nanoseconds = spawnTime.nanoseconds;
     timeLimit.seconds = spawnTime.seconds;
     advanceClock(&timeLimit, 0, rand() % 499999999 + 1);
+
+    //Spawn inits and first request
+    usrOnSpawnRequest(getpid(), shmRequestPtr, shmResourceDescPtr);
+    updateClaimMatrix(shmRequestPtr);
 
     int count = 0;
     while(1) {

@@ -125,6 +125,7 @@ int spawnProcess() {
     }
 
     pid = fork();
+    //FROM HERE BELOW CANNOT ACCESS ACTIVE PROCESS ARRAY
 
     //Handle fork error
     if(pid < 0) {
@@ -134,10 +135,11 @@ int spawnProcess() {
 
     //Exec child
     if(pid == 0) {
-        execl("./usr", "usr",  (char*) NULL);
+        execl("./usr", "usr", (char*) NULL);
     }
 
     addToActiveProcesses();
+    
     ++numActivePs;
     
     return 0;

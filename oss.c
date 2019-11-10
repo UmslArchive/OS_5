@@ -8,6 +8,11 @@
 #include "resourceManage.h"
 
 int main(int arg, char* argv[]) {
+
+    //For piping the index of a forked process over to the child
+    int fd[2];
+    int pipeVal = 0;
+    pipe(fd);
     
     //Initializations:
     
@@ -21,6 +26,7 @@ int main(int arg, char* argv[]) {
 
     //Init Managers
     initOssProcessManager();
+    initMatricesAndVectors();
 
     //Init semaphore
     sem_t* shmSemPtr = initShmSemaphore(SHM_KEY_SEM, shmSemSize, &shmSemID, SHM_OSS_FLAGS);
@@ -37,6 +43,8 @@ int main(int arg, char* argv[]) {
 
     //Init shared memory values
     initClock(shmClockPtr);
+    initRequestArray(shmRequestPtr);
+    initResourceDescriptorArray(shmResourceDescPtr);
 
     //Generate first random process spawn time
     Clock spawnTime;
@@ -47,6 +55,9 @@ int main(int arg, char* argv[]) {
 
     //DEBUG spawn only one process    
     while(1) {
+
+        updateAvailableVector(shmResourceDescPtr);
+        
         if(checkIfPassedTime(shmClockPtr, &spawnTime) == 1) {
             //Spawn
             if(spawnProcess() == 1) {

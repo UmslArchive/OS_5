@@ -98,8 +98,8 @@ void initResourceDescriptorArray(ResourceDescriptor* resArray){
 }
 
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid) {
+    fprintf(stderr, "pid %d\n", pid);
     int index = getIndexOfPid(pid);
-
     if(index == -1) {
         fprintf(stderr, "ERROR: Request iterator is NULL\n");
         return NULL;
@@ -373,7 +373,6 @@ void usrSendRequest(pid_t pid, Request* reqArray) {
 
 void updateClaimMatrix(Request* reqArray) {
     Request* iterator = reqArray;
-    fprintf(stderr, "updateClaimmat\n");
     if(reqArray == NULL) {
         fprintf(stderr, "ERROR: updateClaimMatrix : reqArray NULL\n");
         return;
