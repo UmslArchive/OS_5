@@ -329,7 +329,7 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
 void usrSendRequest(pid_t pid, Request* reqArray) {
     Request* reqIterator = getProcessRequestIterator(reqArray, pid);
 
-    if(reqIterator == NULL)
+    if(reqIterator == NULL || reqIterator->reqState == FINISHED || reqIterator->reqState == NULL_PROCESS)
         return;
 
     //Check if the process is finished before making a request
@@ -440,17 +440,31 @@ void updateAvailableVector(ResourceDescriptor* resArray) {
 
 void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
     Request* iterator = reqArray;
-    int i, j;
+    ResourceDescriptor* descIter = resArray;
+    int i, j, k;
     int count = 0;
 
     //Deallocate all finished processes
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         if(iterator->reqState == FINISHED) {
-            //deallocate
-
-            iterator->reqState = NULL_PROCESS;
+            descIter = resArray;
+            for(j = 0; j < MAX_RESOURCES; ++j) {
+                for(k = 0; k < descIter->maxAllocs; ++k) {
+                    if(getPidOfIndex(i) == descIter->currentAllocs[k]) {
+                        descIter->currentAllocs[k] = 0;
+                    }
+                }
+                descIter++;
+            }
         }
+        iterator++;
     }
+
+    updateAllocMatrix(resArray);
+    updateAvailableVector(resArray);
+
+    //Reset iterator
+    iterator = reqArray;
 
     //Process unproccessed requests
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {

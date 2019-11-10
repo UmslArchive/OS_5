@@ -259,7 +259,7 @@ void testProcessSendRequest() {
 
     ossProcessRequests(req, desc);
 
-    for(i = 0; i < 25; ++i) {
+    for(i = 0; i < 100; ++i) {
         usrSendRequest(getPidOfIndex(rand() % MAX_CHILD_PROCESSES), req);
         ossProcessRequests(req, desc);
     }
