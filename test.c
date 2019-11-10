@@ -28,7 +28,6 @@ int main() {
     testRequestArrayInit();
     testResourceDescriptorInit();
     testProcessSendRequest();
-    //testBuildMatrices();
 
     return 0;
 }
@@ -271,12 +270,6 @@ void testProcessSendRequest() {
     free(desc);
 
     fprintf(stderr, "-----\n");
-}
-
-void testBuildMatrices() {
-    int testMatrix[MAX_CHILD_PROCESSES][MAX_RESOURCES];
-    initMatrix(testMatrix);
-    printMatrix(stderr, testMatrix);
 }
 
 void nonConcurrentProgramSimulation() {

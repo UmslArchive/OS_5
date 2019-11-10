@@ -135,11 +135,42 @@ int isSafeState() {
     return 1;
 }
 
-void approveRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid){
-    
+void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_t pid){
+    ResourceDescriptor* resIterator = resArray;
+    int allocAmount = requestIterator->amount;
+    int i, j;
+    int count = 0;
+
+    //Move resource descriptor iterator to correct box
+    for(i = 0; i < requestIterator->resource; ++i) {
+        resIterator++;
+    }
+
+    printf("PROCESSING REQUEST pid = %d, res = %d, amount = %d\n", pid, requestIterator->resource, allocAmount);
+
+    //While there are still resources to alloc
+    while(allocAmount > 0) {
+        //sleep(1);
+        //Find first empty slot in currentAllocs of resource descriptor
+        for(j = 0; j < resIterator->maxAllocs; ++j) {
+            if(resIterator->currentAllocs[j] == 0) {
+                //Put pid into allocation slot
+                resIterator->currentAllocs[j] = pid;
+                --allocAmount;
+                count = 0;
+                break;
+            }
+        }
+        count++;
+        if(count > 11)
+            exit(0);
+
+        //printf("pid = %d, res = %d, amount = %d\n", pid, requestIterator->resource, allocAmount);
+        printResDesc(resArray, i);
+    }
 }
 
-void denyRequest(Request* reqArray, pid_t pid) {
+void denyRequest(Request* requestIterator, pid_t pid) {
 
 }
 
@@ -149,7 +180,7 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
     Request* reqIterator = getProcessRequestIterator(reqArray, pid);
     ResourceDescriptor* descIterator = descArray;
 
-    if(reqIterator == NULL)
+    if(reqIterator == NULL || descArray == NULL)
         return;
     
     //Randomly generate the amount max claim of a process for the each resource
@@ -275,11 +306,11 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
 
             //Check for safety
             if(isSafeState() == 1) {
-                approveRequest(reqArray, resArray, iterator->pid);
+                approveRequest(iterator, resArray, iterator->pid);
                 iterator->reqState = APPROVED;
             }
             else {
-                denyRequest(reqArray, iterator->pid);
+                denyRequest(iterator, iterator->pid);
                 iterator->reqState = DENIED;
             }
             ++count;

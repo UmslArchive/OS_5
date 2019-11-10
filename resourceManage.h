@@ -69,8 +69,8 @@ void updateAllocMatrix(ResourceDescriptor* resArray);
 void updateAvailableVector(ResourceDescriptor* resArray);
 void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray);
 int isSafeState();
-void approveRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid);
-void denyRequest(Request* reqArray, pid_t pid);
+void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_t pid);
+void denyRequest(Request* requestIterator, pid_t pid);
 
 //usr process resource functions:
 void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray);
