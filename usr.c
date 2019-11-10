@@ -9,7 +9,7 @@
 
 int main(int arg, char* argv[]) {
 
-    int indexInActivePsArray;
+    int indexInActivePsArray, i, j, k;
 
     //Initializations:
 
@@ -25,6 +25,24 @@ int main(int arg, char* argv[]) {
     Clock* shmClockPtr = (Clock*)initSharedMemory(SHM_KEY_CLOCK, shmClockSize, &shmClockID, SHM_USR_FLAGS);
     ResourceDescriptor* shmResourceDescPtr = (ResourceDescriptor*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_USR_FLAGS);
     Request* shmRequestPtr = (Request*)initSharedMemory(SHM_KEY_REQUEST, shmRequestSize, &shmRequestID, SHM_USR_FLAGS);
+    Msg* shmMsgPtr = (Msg*)initSharedMemory(SHM_KEY_MSG, shmMsgSize, &shmMsgID, SHM_USR_FLAGS);
+
+    Request* thisProcessesRequestPtr = shmRequestPtr;
+    for(i = 0; i < indexInActivePsArray; ++i) {
+        thisProcessesRequestPtr++;
+    }
+
+    //Get the index in the active process array before anything!
+    while(1) {
+        if(shmMsgPtr->state == SENT && shmMsgPtr->usrpid == getpid()) {
+            //fprintf(stderr, "RECEIVED\n");
+            indexInActivePsArray = shmMsgPtr->index;
+            shmMsgPtr->state = RECEIVED;
+            break;
+        }
+    }
+
+    //fprintf(stderr, "INDEX = %d of pid %d\n", indexInActivePsArray, getpid());
 
     //Save spawn time
     Clock spawnTime;
@@ -38,12 +56,14 @@ int main(int arg, char* argv[]) {
     advanceClock(&timeLimit, 0, rand() % 499999999 + 1);
 
     //Spawn inits and first request
-    usrOnSpawnRequest(getpid(), shmRequestPtr, shmResourceDescPtr);
+    usrOnSpawnRequest(getpid(), indexInActivePsArray, shmRequestPtr, shmResourceDescPtr);
     updateClaimMatrix(shmRequestPtr);
 
     int count = 0;
     while(1) {
         if(checkIfPassedTime(shmClockPtr, &timeLimit) == 1) {
+
+            usrSendRequest(getpid(), indexInActivePsArray, shmRequestPtr);
             
             sem_wait(shmSemPtr);
                 count++;
@@ -60,10 +80,10 @@ int main(int arg, char* argv[]) {
 
             sem_post(shmSemPtr);
 
-        }
+        }        
         
         //Check if a signal was received
-        if(usrSignalReceivedFlag == 1 || count > 20)
+        if(usrSignalReceivedFlag == 1  || count > 20 )
             break;
     }
 

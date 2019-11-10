@@ -9,10 +9,8 @@
 
 int main(int arg, char* argv[]) {
 
-    //For piping the index of a forked process over to the child
-    int fd[2];
-    int pipeVal = 0;
-    pipe(fd);
+    pid_t newestChildPid = 0;
+    int i, j, k;
     
     //Initializations:
     
@@ -40,11 +38,15 @@ int main(int arg, char* argv[]) {
     Clock* shmClockPtr = (Clock*)initSharedMemory(SHM_KEY_CLOCK, shmClockSize, &shmClockID, SHM_OSS_FLAGS);
     ResourceDescriptor* shmResourceDescPtr = (ResourceDescriptor*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_OSS_FLAGS);
     Request* shmRequestPtr = (Request*)initSharedMemory(SHM_KEY_REQUEST, shmRequestSize, &shmRequestID, SHM_OSS_FLAGS);
+    Msg* shmMsgPtr = (Msg*)initSharedMemory(SHM_KEY_MSG, shmMsgSize, &shmMsgID, SHM_OSS_FLAGS);
+
+    Request* reqIterator = shmRequestPtr;
 
     //Init shared memory values
     initClock(shmClockPtr);
     initRequestArray(shmRequestPtr);
     initResourceDescriptorArray(shmResourceDescPtr);
+    resetMsg(shmMsgPtr);
 
     //Generate first random process spawn time
     Clock spawnTime;
@@ -52,23 +54,42 @@ int main(int arg, char* argv[]) {
     spawnTime.seconds = 0;
     
     int numProcesses = 0;
-
-    //DEBUG spawn only one process    
+  
     while(1) {
 
         updateAvailableVector(shmResourceDescPtr);
         
         if(checkIfPassedTime(shmClockPtr, &spawnTime) == 1) {
             //Spawn
-            if(spawnProcess() == 1) {
-                fprintf(stderr, "%d Process Spawned:\n", ++numProcesses);
-                printClock(shmClockPtr);
-            }
+            if(spawnProcess(&newestChildPid) == 1) {
+                //fprintf(stderr, "oss %d newestchild\n", newestChildPid);
+                //Send newestChildPid process index as msg
+                shmMsgPtr->usrpid = newestChildPid;
+                shmMsgPtr->index = getIndexOfPid(newestChildPid);
+                shmMsgPtr->state = SENT;
 
-            //Set new time limit
-            setClock(&spawnTime, shmClockPtr->seconds, shmClockPtr->nanoseconds);
-            advanceClock(&spawnTime, 0, rand() % 499999999 + 1);
+                //fprintf(stderr, "OSS index %d of pid %d SENT\n", getIndexOfPid(newestChildPid), newestChildPid);
+
+                while(1) {
+                    
+                    if(shmMsgPtr->state == RECEIVED) {
+                        //fprintf(stderr, "RESET\n");
+                        shmMsgPtr->state = EMPTY;
+                        break;
+                    }
+                }
+
+                //fprintf(stderr, "%d Process Spawned:\n", ++numProcesses);
+                printClock(shmClockPtr);
+            
+
+                //Set new time limit
+                setClock(&spawnTime, shmClockPtr->seconds, shmClockPtr->nanoseconds);
+                advanceClock(&spawnTime, 0, rand() % 499999999 + 1);
+            }
         }
+
+        ossProcessRequests(shmRequestPtr, shmResourceDescPtr);
 
         //Critical section
         sem_wait(shmSemPtr);

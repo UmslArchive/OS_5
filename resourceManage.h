@@ -74,8 +74,8 @@ void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_
 void denyRequest(Request* requestIterator, pid_t pid);
 
 //usr process resource functions:
-void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray);
-void usrSendRequest(pid_t pid, Request* reqArray);
+void usrOnSpawnRequest(pid_t pid, int resIndex, Request* reqArray, ResourceDescriptor* descArray);
+void usrSendRequest(pid_t pid, int resIndex, Request* reqArray);
 
 //Utility:
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid);

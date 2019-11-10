@@ -266,8 +266,15 @@ void denyRequest(Request* requestIterator, pid_t pid) {
 
 //usrPs process resource functions:
 
-void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray) {
-    Request* reqIterator = getProcessRequestIterator(reqArray, pid);
+void usrOnSpawnRequest(pid_t pid, int resIndex, Request* reqArray, ResourceDescriptor* descArray) {
+    Request* reqIterator = reqIterator;
+
+    int k;
+    for(k = 0; k < resIndex; ++k) {
+        reqIterator++;
+    }
+
+
     ResourceDescriptor* descIterator = descArray;
 
     if(reqIterator == NULL || descArray == NULL)
@@ -326,8 +333,13 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
 //Function places validated requests into the request array for a process.
 //Valid meaning doesn't attempt anything impossible, but could still be an
 //unsafe request. OSS will check for safety, not child process.
-void usrSendRequest(pid_t pid, Request* reqArray) {
-    Request* reqIterator = getProcessRequestIterator(reqArray, pid);
+void usrSendRequest(pid_t pid, int resIndex, Request* reqArray) {
+    Request* reqIterator = reqIterator;
+
+    int k;
+    for(k = 0; k < resIndex; ++k) {
+        reqIterator++;
+    }
 
     if(reqIterator == NULL || reqIterator->reqState == FINISHED || reqIterator->reqState == NULL_PROCESS)
         return;

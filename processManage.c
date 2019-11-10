@@ -117,7 +117,8 @@ int destroyProcessManager() {
 
 //oss functions:
 
-int spawnProcess() {
+int spawnProcess(int* newestChildPid) {
+
     //Don't spawn process if array is full
     if(activeProcessArrayFull() == 1) {
         //fprintf(stderr, "\t\t\tProcess array full--No fork\n");
@@ -132,17 +133,18 @@ int spawnProcess() {
         perror("ERROR:oss:failed to fork");
         return -1;
     }
-
+    
     //Exec child
     if(pid == 0) {
         execl("./usr", "usr", (char*) NULL);
     }
 
+    *newestChildPid = pid;
     addToActiveProcesses();
-    
     ++numActivePs;
+
     
-    return 0;
+    return 1;
 }
 
 int spawnDummyProcess() {
