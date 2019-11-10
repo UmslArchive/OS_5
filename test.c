@@ -255,6 +255,8 @@ void testProcessSendRequest() {
 
     printAllRequests(req);
 
+    fprintf(stderr, "\n");
+
     ossProcessRequests(req, desc);
 
     fprintf(stderr, "STATE MATRIX:\n");

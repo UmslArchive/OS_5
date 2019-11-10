@@ -146,7 +146,7 @@ void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_
         resIterator++;
     }
 
-    printf("PROCESSING REQUEST pid = %d, res = %d, amount = %d\n", pid, requestIterator->resource, allocAmount);
+    printf("[%d]PROCESSING REQUEST pid = %d, res = %d, amount = %d\n",getIndexOfPid(pid), pid, requestIterator->resource, allocAmount);
 
     //While there are still resources to alloc
     while(allocAmount > 0) {
@@ -165,7 +165,7 @@ void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_
         if(count > 11)
             exit(0);
 
-        //printf("pid = %d, res = %d, amount = %d\n", pid, requestIterator->resource, allocAmount);
+        fprintf(stderr, "\t");
         printResDesc(resArray, i);
     }
 }
@@ -183,7 +183,7 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
     if(reqIterator == NULL || descArray == NULL)
         return;
     
-    //Randomly generate the amount max claim of a process for the each resource
+    //Randomly generate the amount max claim of a process for each resource
     int claim, i;
     for(i = 0; i < MAX_RESOURCES; ++i) {
         claim = rand() % (descIterator->maxAllocs + 1); //0 to 20
@@ -302,7 +302,7 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
             copyMatrix(allocMat, stateMat);
 
             //Stick it in the state matrix
-            stateMat[i][iterator->resource] = iterator->amount;
+            stateMat[i][iterator->resource] += iterator->amount;
 
             //Check for safety
             if(isSafeState() == 1) {

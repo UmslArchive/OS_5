@@ -53,6 +53,7 @@ typedef struct request_struct {
 typedef struct queue_struct {
     int front;
     int back;
+    int numQueued;
     Request array[MAX_CHILD_PROCESSES];
 } RequestQueue;
 
