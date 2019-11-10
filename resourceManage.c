@@ -273,16 +273,22 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
     if(reqIterator == NULL || descArray == NULL)
         return;
 
-    //Randomly generate the amount max claim of a process for each resource
+    //Randomly generate the amount max claim of a process for each resource:
+
+    //While loop ensures that no process has a claims vector full of 0s
     int atLeastOne = 0;
     int claim, i;
     while(atLeastOne == 0) {
+        //Reset the descriptor iterator
         descIterator = descArray;
+
+        //iterate through and randomly assign claim values to each res
         for(i = 0; i < MAX_RESOURCES; ++i) {
             claim = rand() % (descIterator->maxAllocs + 1); //0 to 20
             reqIterator->maxClaims[i] = claim;
             descIterator++;
 
+            //If at least one claim is > 0 then that is good
             if(claim > 0)
                 atLeastOne = 1;
         }
