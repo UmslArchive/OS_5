@@ -409,8 +409,8 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
             //Stick it in the state matrix
             stateMat[i][iterator->resource] += iterator->amount;
 
-            fprintf(stderr, "state mat\n");
-            printMatrix(stderr, stateMat);
+            /* fprintf(stderr, "state mat\n");
+            printMatrix(stderr, stateMat); */
 
             //Check for safety
             if(isSafeState(iterator) == 1) {
