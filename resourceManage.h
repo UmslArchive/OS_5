@@ -75,7 +75,7 @@ void denyRequest(Request* requestIterator, pid_t pid);
 
 //usr process resource functions:
 void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArray);
-int usrSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount); //TODO
+void usrSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount); //TODO
 
 //Utility:
 Request* getProcessRequestIterator(Request* reqArray, pid_t pid);

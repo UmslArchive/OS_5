@@ -326,10 +326,13 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
 //Function places validated requests into the request array for a process.
 //Valid meaning doesn't attempt anything impossible, but could still be an
 //unsafe request. OSS will check for safety, not child process.
-int usrSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount) {
-    Request* iterator = getProcessRequestIterator(reqArray, pid);
+void usrSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount) {
+    Request* reqIterator = getProcessRequestIterator(reqArray, pid);
 
-    return 0;
+    if(reqIterator == NULL)
+        return;
+
+
 }
 
 void updateClaimMatrix(Request* reqArray) {
