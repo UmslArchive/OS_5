@@ -332,28 +332,27 @@ void usrSendRequest(pid_t pid, Request* reqArray) {
     if(reqIterator == NULL)
         return;
 
-
     //Determine which resource to request
     int resourceIndex;
     int valid = 0;
+
+    int need;
     while(valid == 0) {
         resourceIndex = rand() % MAX_RESOURCES;
-        
-        //Check if valid
-        if(reqIterator->maxClaims[resourceIndex] != 0)
-            valid = 1;
-    }
 
-    //Set claim correspondence
-    int claim = reqIterator->maxClaims[resourceIndex];
+        need = reqIterator->maxClaims[resourceIndex] - allocMat[getIndexOfPid(pid)][resourceIndex];
+        
+        //Check if valid (claim for a resource > 0 and need for a resource > 0)
+        if(reqIterator->maxClaims[resourceIndex] != 0 && need > 0) {
+            valid = 1;
+        }            
+    }
 
     reqIterator->pid = pid;
     reqIterator->resource = resourceIndex;
     reqIterator->isRelease = 0;
-    reqIterator->amount = rand() % claim + 1; //1 to 20
+    reqIterator->amount = rand() % need + 1; //1 to need
     reqIterator->reqState = UNPROCESSED;
-
-
 }
 
 void updateClaimMatrix(Request* reqArray) {
@@ -428,6 +427,13 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
     int i, j;
     int count = 0;
 
+    //Deallocate all finished processes
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        if(iterator->reqState == FINISHED) {
+            //deallocate
+        }
+    }
+
     //Process unproccessed requests
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
 
@@ -461,9 +467,6 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
                 iterator->reqState = DENIED;
             }
             ++count;
-        }
-        else if(iterator->reqState == FINISHED) {
-            //Deallocate all resources held by PID pointed to by iterator TODO
         }
         iterator++;
     }

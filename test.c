@@ -259,6 +259,11 @@ void testProcessSendRequest() {
 
     ossProcessRequests(req, desc);
 
+    for(i = 0; i < 25; ++i) {
+        usrSendRequest(getPidOfIndex(rand() % MAX_CHILD_PROCESSES), req);
+        ossProcessRequests(req, desc);
+    }
+    
     fprintf(stderr, "STATE MATRIX:\n");
     printMatrix(stderr, stateMat);
 
