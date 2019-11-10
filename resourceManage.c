@@ -132,7 +132,93 @@ ResourceDescriptor* getResourceDescriptorIterator(ResourceDescriptor* resArray, 
 }
 
 int isSafeState(Request* req) {
-    int i, j;
+    int i, j, k, p;
+    int need[MAX_CHILD_PROCESSES][MAX_RESOURCES];
+
+    //Vector to contain hypothetical availabilities
+    int hypoAvailVec[MAX_RESOURCES];
+
+    //Set hypoAvailVec = resVec
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        hypoAvailVec[i] = resVec[i];
+    }
+
+    //Subtract away "allocd" resources
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        for(j = 0; j < MAX_RESOURCES; ++j) {
+            hypoAvailVec[j] -= stateMat[i][j];
+        }
+    }
+  
+    // Function to calculate need matrix 
+    // Calculating Need of each P 
+    for (i = 0 ; i < MAX_CHILD_PROCESSES ; i++) 
+        for (j = 0 ; j < MAX_RESOURCES ; j++) 
+            need[i][j] = claimMat[i][j] - stateMat[i][j]; 
+  
+    // Mark all processes as infinish 
+    //Init beenProcessed
+    int beenProcessed[MAX_CHILD_PROCESSES];
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        beenProcessed[i] = 0;
+    }
+  
+    // Make a copy of available resources 
+    int work[MAX_RESOURCES]; 
+    for (i = 0; i < MAX_RESOURCES ; i++) 
+        work[i] = hypoAvailVec[i];
+  
+    // While all processes are not finished 
+    // or system is not in safe state. 
+    int count = 0; 
+    while (count < MAX_CHILD_PROCESSES) 
+    { 
+        // Find a process which is not finish and 
+        // whose needs can be satisfied with current 
+        // work[] resources. 
+        int found = 0; 
+        for (p = 0; p < MAX_CHILD_PROCESSES; p++) 
+        { 
+            // First check if a process is finished, 
+            // if no, go for next condition 
+            if (beenProcessed[p] == 0) 
+            { 
+                // Check if for all resources of 
+                // current P need is less 
+                // than work  
+                for (j = 0; j < MAX_RESOURCES; j++) 
+                    if (need[p][j] > work[j]) 
+                        break; 
+  
+                // If all needs of p were satisfied. 
+                if (j == MAX_RESOURCES) 
+                { 
+                    // Add the allocated resources of 
+                    // current P to the available/work 
+                    // resources i.e.free the resources 
+                    for (k = 0 ; k < MAX_RESOURCES ; k++) 
+                        work[k] += stateMat[p][k]; 
+  
+                    count++;
+  
+                    // Mark this p as finished 
+                    beenProcessed[p] = 1; 
+  
+                    found = 1;
+                } 
+            } 
+        } 
+  
+        // If we could not find a next process in safe 
+        // sequence. 
+        if (found == 0) 
+        { 
+            return 0; 
+        } 
+    }  
+    return 1; 
+
+    /* int i, j;
     
     //Vector to contain processes which have already been determined possible to clear
     int beenProcessed[MAX_CHILD_PROCESSES];
@@ -157,6 +243,8 @@ int isSafeState(Request* req) {
         }
     }
 
+    printVector(stderr, hypoAvailVec, MAX_RESOURCES);
+
     //Check if possible
     if(req->amount > hypoAvailVec[req->resource]) {
         return 0;
@@ -170,11 +258,23 @@ int isSafeState(Request* req) {
         zerod = 1;
         for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
             if(beenProcessed[i] == 0) {
+
+                for(j = 0; j < MAX_RESOURCES; ++j) {
+                    hypoAvailVec[j] -= (claimMat[i][j] - stateMat[i][j]);
+                }
+
                 for(j = 0; j < MAX_RESOURCES; ++j) {
                     //if need more than available
-                    if(claimMat[i][j] - stateMat[i][j] > hypoAvailVec[j]) {
+
+                    fprintf(stderr, "(%d, %d) C%d - S%d > A%d\t",i, j, claimMat[i][j], stateMat[i][j], hypoAvailVec[j]);
+
+                    if((claimMat[i][j] - stateMat[i][j]) > hypoAvailVec[j]) {
+                        fprintf(stderr, "yes\n");
                         zerod = 0;
                         break;
+                    }
+                    else {
+                        fprintf(stderr, "no\n");
                     }
                 }
 
@@ -188,6 +288,11 @@ int isSafeState(Request* req) {
                     }
 
                     break;
+                }
+                else {
+                    for(j = 0; j < MAX_RESOURCES; ++j) {
+                        hypoAvailVec[j] += (claimMat[i][j] - stateMat[i][j]);
+                    }
                 }
 
                 if(i != MAX_CHILD_PROCESSES - 1)
@@ -205,12 +310,15 @@ int isSafeState(Request* req) {
             }
         }
 
-        if(zerod == 0 && full == 0)
+        if(zerod == 0 && full == 0) {
             return 0;
+        }
 
-        if(full == 1)
+
+        if(full == 1) {
            return 1;
-    }
+        }
+    } */
 }
 
 void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_t pid){
@@ -246,6 +354,8 @@ void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_
         fprintf(stderr, "\t");
         printResDesc(resArray, i);
     }
+
+    updateAllocMatrix(resArray);
 }
 
 void denyRequest(Request* requestIterator, pid_t pid) {
@@ -382,14 +492,23 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
             //Stick it in the state matrix
             stateMat[i][iterator->resource] += iterator->amount;
 
+            printMatrix(stderr, stateMat);
+
             //Check for safety
             if(isSafeState(iterator) == 1) {
-                fprintf(stderr, "approved\n");
+                fprintf(stderr, "%d approved\n", i);
                 approveRequest(iterator, resArray, iterator->pid);
                 iterator->reqState = APPROVED;
             }
             else {
-                fprintf(stderr, "denied\n");
+                fprintf(stderr, "%d denied\n", i);
+                printResDesc(resArray, iterator->resource);
+                fprintf(stderr, "REQUEST from %d: res=%d amt=%d at %d:%d\n",
+                    iterator->pid,
+                    iterator->resource, 
+                    iterator->amount, 
+                    iterator->timestamp.seconds,
+                    iterator->timestamp.nanoseconds);
                 denyRequest(iterator, iterator->pid);
                 iterator->reqState = DENIED;
             }

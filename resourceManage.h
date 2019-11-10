@@ -9,7 +9,7 @@
 
 #include "shared.h"
 
-#define MAX_RESOURCES 20
+#define MAX_RESOURCES 2
 #define MAX_RESOURCE_INSTANCES 10
 
 //Matrices and vectors
