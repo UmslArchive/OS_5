@@ -21,7 +21,7 @@
 #include <time.h>
 #include <fcntl.h>
 
-#define MAX_CHILD_PROCESSES 3
+#define MAX_CHILD_PROCESSES 18
 
 //Initialization/deallocation
 int initOssProcessManager();

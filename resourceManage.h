@@ -9,7 +9,7 @@
 
 #include "shared.h"
 
-#define MAX_RESOURCES 3
+#define MAX_RESOURCES 20
 #define MAX_RESOURCE_INSTANCES 10
 
 //Matrices and vectors
@@ -28,7 +28,7 @@ typedef enum request_state {
     DENIED,
     APPROVED,
     NULL_PROCESS,
-    FINISHED,
+    FINISHED
 } ReqState;
 
 //One for each resource

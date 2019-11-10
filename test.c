@@ -9,7 +9,6 @@ void testRequestArrayInit();
 void testResourceDescriptorInit();
 void testProcessSendRequest();
 void testBuildMatrices();
-void nonConcurrentProgramSimulation();
 
 //===========================================================
 
@@ -27,11 +26,12 @@ int main() {
     //Resource tests
     testRequestArrayInit();
     testResourceDescriptorInit();
+
+    //Primary test
     testProcessSendRequest();
 
     return 0;
 }
-
 
 //==========================================================
 
@@ -259,10 +259,23 @@ void testProcessSendRequest() {
 
     ossProcessRequests(req, desc);
 
-    for(i = 0; i < 100; ++i) {
+    for(i = 0; i < 10000; ++i) {
         usrSendRequest(getPidOfIndex(rand() % MAX_CHILD_PROCESSES), req);
         ossProcessRequests(req, desc);
     }
+
+    /* fprintf(stderr, "NEXT GO AROUND+================================\n");
+
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        spawnDummyProcess();
+        usrOnSpawnRequest(getPidOfIndex(i), req, desc);
+        updateClaimMatrix(req);
+    }
+
+    ossProcessRequests(req, desc); */
+
+    fprintf(stderr, "CLAIM MATRIX:\n");
+    printMatrix(stderr, claimMat);
     
     fprintf(stderr, "STATE MATRIX:\n");
     printMatrix(stderr, stateMat);
@@ -282,19 +295,4 @@ void testProcessSendRequest() {
     free(desc);
 
     fprintf(stderr, "-----\n");
-}
-
-void nonConcurrentProgramSimulation() {
-    /* spawnDummyProcess();
-    if(state == NULL_PROCESS)
-        usrOnSpawnRequest();
-
-    while(1)
-        if(state == UNPROCESSED)
-        ossRetrieveRequests();
-        
-        if(state == APPROVED || DENIED)
-        usrSendRequest(); */
-
-
 }
