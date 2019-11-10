@@ -228,6 +228,8 @@ void testProcessSendRequest() {
 
     fprintf(stderr, "Request send tests:\n");
 
+    //-----
+
     printAllResDesc(desc);
     fprintf(stderr, "RES ");
     printVector(stderr, resVec, MAX_RESOURCES);
@@ -237,6 +239,7 @@ void testProcessSendRequest() {
     fprintf(stderr, "AVA ");
     printVector(stderr, availVec, MAX_RESOURCES);
 
+    //Spawn max dummy processes and send spawn requests and update claim mat
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         spawnDummyProcess();
         usrOnSpawnRequest(getPidOfIndex(i), req, desc);
@@ -255,13 +258,14 @@ void testProcessSendRequest() {
 
     ossProcessRequests(req, desc);
 
-    updateAllocMatrix(desc);
-    printMatrix(stderr, allocMat);
-
-
     fprintf(stderr, "STATE MATRIX:\n");
     printMatrix(stderr, stateMat);
 
+    fprintf(stderr, "ALLOC MATRIX:\n");
+    updateAllocMatrix(desc);
+    printMatrix(stderr, allocMat);
+
+    //Cleanup
     destroyProcessManager();
     free(req);
     free(desc);
