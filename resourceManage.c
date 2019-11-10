@@ -272,14 +272,29 @@ void usrOnSpawnRequest(pid_t pid, Request* reqArray, ResourceDescriptor* descArr
 
     if(reqIterator == NULL || descArray == NULL)
         return;
-    
+
     //Randomly generate the amount max claim of a process for each resource
+    int atLeastOne = 0;
     int claim, i;
-    for(i = 0; i < MAX_RESOURCES; ++i) {
-        claim = rand() % (descIterator->maxAllocs + 1); //0 to 20
-        reqIterator->maxClaims[i] = claim;
-        descIterator++;
+    while(atLeastOne == 0) {
+        descIterator = descArray;
+        for(i = 0; i < MAX_RESOURCES; ++i) {
+            claim = rand() % (descIterator->maxAllocs + 1); //0 to 20
+            reqIterator->maxClaims[i] = claim;
+            descIterator++;
+
+            if(claim > 0)
+                atLeastOne = 1;
+        }
     }
+    
+
+    //Debug
+    /* fprintf(stderr, "maxClaims: ");
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        fprintf(stderr, "%d ", reqIterator->maxClaims[i]);
+    }
+    fprintf(stderr, "\n"); */
 
     //Randomly generate which resource a process will like to have
     int resourceIndex;
@@ -313,7 +328,7 @@ int usrSendRequest(Request* reqArray, pid_t pid, int resIndex, int amount) {
 
 void updateClaimMatrix(Request* reqArray) {
     Request* iterator = reqArray;
-
+    fprintf(stderr, "updateClaimmat\n");
     if(reqArray == NULL) {
         fprintf(stderr, "ERROR: updateClaimMatrix : reqArray NULL\n");
         return;
