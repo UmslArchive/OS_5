@@ -132,11 +132,11 @@ ResourceDescriptor* getResourceDescriptorIterator(ResourceDescriptor* resArray, 
 }
 
 int isSafeState() {
-    return 0;
+    return 1;
 }
 
 void approveRequest(Request* reqArray, ResourceDescriptor* resArray, pid_t pid){
-
+    
 }
 
 void denyRequest(Request* reqArray, pid_t pid) {
@@ -209,11 +209,33 @@ void updateClaimMatrix(Request* reqArray) {
     }
 }
 
+//Function reads current allocs from the Resource Descriptor array and
+//updates the matrix accordingly.
+void updateAllocMatrix(ResourceDescriptor* resArray) {
+    ResourceDescriptor* iterator = resArray;
+    int i, j;
+
+    //Reset alloc matrix
+    initMatrix(allocMat);
+
+    //Iterate through every resource
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        //Iterate through each alloc block in the currentAllocs array
+        for(j = 0; j < iterator->maxAllocs; ++j) {
+            //If a block is allocated...
+            if(iterator->currentAllocs[j] > 0) {
+                //...store it in the alloc matrix
+                allocMat [getIndexOfPid(iterator->currentAllocs[j])] [i] += 1;
+            }
+        }
+        iterator++;
+    }
+}
+
 void updateAvailableVector(ResourceDescriptor* resArray) {
     ResourceDescriptor* iterator = resArray;
     
-    
-    //Max - current allocs for each resource
+    //(max - current) allocs for each resource
     int i, j;
     int available, numAllocd;
     for(i = 0; i < MAX_RESOURCES; ++i) {
@@ -243,6 +265,7 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
     //Process unproccessed requests
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
 
+        //Process unprocessed requests
         if(iterator->reqState == UNPROCESSED) {
             //Make state matrix a copy of allocd matrix
             copyMatrix(allocMat, stateMat);
@@ -260,6 +283,9 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
                 iterator->reqState = DENIED;
             }
             ++count;
+        }
+        else if(iterator->reqState == FINISHED) {
+            //Deallocate all resources held by PID pointed to by iterator TODO
         }
         iterator++;
     }

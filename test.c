@@ -255,6 +255,9 @@ void testProcessSendRequest() {
 
     ossProcessRequests(req, desc);
 
+    updateAllocMatrix(desc);
+    printMatrix(stderr, allocMat);
+
 
     fprintf(stderr, "STATE MATRIX:\n");
     printMatrix(stderr, stateMat);

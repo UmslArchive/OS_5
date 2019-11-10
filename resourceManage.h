@@ -21,13 +21,14 @@ extern int availVec[MAX_RESOURCES];
 
 //UNPROCESSED - request sent but not yet received by oss.
 //DENIED - request received and denied by oss. usr process will sleep.
-//APPROVED - Request granted and alloc'd. Ready for new request.
+//APPROVED - Request granted and allocd. Ready for new request.
 //NULL_PROCESS - There is no associated active process in the process manager.
 typedef enum request_state { 
     UNPROCESSED,
     DENIED,
     APPROVED,
-    NULL_PROCESS
+    NULL_PROCESS,
+    FINISHED
 } ReqState;
 
 //One for each resource
@@ -64,6 +65,7 @@ void initMatricesAndVectors();
 
 //oss process resource functions:
 void updateClaimMatrix(Request* reqArray);
+void updateAllocMatrix(ResourceDescriptor* resArray);
 void updateAvailableVector(ResourceDescriptor* resArray);
 void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray);
 int isSafeState();
