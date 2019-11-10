@@ -332,11 +332,27 @@ void usrSendRequest(pid_t pid, Request* reqArray) {
     if(reqIterator == NULL)
         return;
 
+    //Check if the process is finished before making a request
+    int i, need;
+    int allComplete = 1;
+    for(i = 0; i < MAX_RESOURCES; ++i) {
+        need = claimMat[getIndexOfPid(pid)][i] - allocMat[getIndexOfPid(pid)][i];
+        if(need > 0) {
+            allComplete = 0;
+            break;
+        }
+    }
+
+    if(allComplete == 1) {
+        fprintf(stderr, "%d w/ pid %d FINISHED\n", getIndexOfPid(pid), pid);
+        reqIterator->reqState = FINISHED;
+        return;
+    }
+
     //Determine which resource to request
     int resourceIndex;
     int valid = 0;
 
-    int need;
     while(valid == 0) {
         resourceIndex = rand() % MAX_RESOURCES;
 
@@ -431,6 +447,8 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         if(iterator->reqState == FINISHED) {
             //deallocate
+
+            iterator->reqState = NULL_PROCESS;
         }
     }
 
