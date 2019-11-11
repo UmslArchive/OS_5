@@ -251,7 +251,7 @@ void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_
         }
         count++;
         if(count > 11)
-            exit(0);
+            break;
 
         fprintf(stderr, "\t");
         printResDesc(resArray, i);
@@ -266,11 +266,11 @@ void denyRequest(Request* requestIterator, pid_t pid) {
 
 //usrPs process resource functions:
 
-void usrOnSpawnRequest(pid_t pid, int resIndex, Request* reqArray, ResourceDescriptor* descArray) {
+void usrOnSpawnRequest(pid_t pid, int psIndex, Request* reqArray, ResourceDescriptor* descArray) {
     Request* reqIterator = reqArray;
 
     int k;
-    for(k = 0; k < resIndex; ++k) {
+    for(k = 0; k < psIndex; ++k) {
         reqIterator++;
     }
 
@@ -333,11 +333,11 @@ void usrOnSpawnRequest(pid_t pid, int resIndex, Request* reqArray, ResourceDescr
 //Function places validated requests into the request array for a process.
 //Valid meaning doesn't attempt anything impossible, but could still be an
 //unsafe request. OSS will check for safety, not child process.
-void usrSendRequest(pid_t pid, int resIndex, Request* reqArray) {
+void usrSendRequest(pid_t pid, int psIndex, Request* reqArray) {
     Request* reqIterator = reqArray;
 
     int k;
-    for(k = 0; k < resIndex; ++k) {
+    for(k = 0; k < psIndex; ++k) {
         reqIterator++;
     }
 

@@ -211,7 +211,7 @@ void initRRA(RRA* rra) {
 }
 
 void usrSendRequestRequest(RRA* rra, pid_t pid, int apIndex, Clock* mainClock) {
-    if(rra->requestRequests[apIndex].state == EMPTY) {
+    while(rra->requestRequests[apIndex].state != EMPTY) {
         rra->requestRequests[apIndex].requesterPid = getpid();
         rra->requestRequests[apIndex].timestamp.seconds = mainClock->seconds;
         rra->requestRequests[apIndex].timestamp.nanoseconds = mainClock->nanoseconds;
