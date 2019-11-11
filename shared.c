@@ -12,6 +12,7 @@ const key_t SHM_KEY_CLOCK = 0x99999999;
 const key_t SHM_KEY_RESOURCE = 0x77777777;
 const key_t SHM_KEY_REQUEST = 0x88888888;
 const key_t SHM_KEY_MSG = 0x10101010;
+const key_t SHM_KEY_RRA = 0x11111111;
 
 //IDs
 int shmSemID = 0;
@@ -19,11 +20,13 @@ int shmClockID = 0;
 int shmResourceDescID = 0;
 int shmRequestID = 0;
 int shmMsgID = 0;
+int shmRRAID = 0;
 
 //Sizes
 const size_t shmSemSize = sizeof(sem_t);
 const size_t shmClockSize = sizeof(Clock);
 const size_t shmMsgSize = sizeof(Msg);
+const size_t shmRRASize = sizeof(RRA);
 
 const int SHM_OSS_FLAGS = IPC_CREAT | IPC_EXCL | 0777;
 const int SHM_USR_FLAGS = 0777;
@@ -83,6 +86,8 @@ void detachAll() {
         shmdt(&shmResourceDescID);
     if(shmMsgID > 0)
         shmdt(&shmMsgID);
+    if(shmRRAID > 0)
+        shmdt(&shmRRAID);
     
 
     //fprintf(stderr, "Child PID %d detached\n", getpid());
@@ -112,6 +117,9 @@ void cleanupAll() {
 
     if(shmMsgID > 0)
         cleanupSharedMemory(&shmMsgID);
+
+    if(shmRRAID > 0)
+        cleanupSharedMemory(&shmRRAID);
 }
 
 //Clock functions:
@@ -191,6 +199,24 @@ void resetMsg(Msg* msg) {
     msg->index = -1;
     msg->state = EMPTY;
     msg->usrpid = 0;
+}
+
+void initRRA(RRA* rra) {
+    int i;
+    for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+        rra->requestRequests[i].requesterPid = 0;
+        rra->requestRequests[i].state = EMPTY;
+        initClock(&(rra->requestRequests[i].timestamp));
+    }
+}
+
+void usrSendRequestRequest(RRA* rra, pid_t pid, int apIndex, Clock* mainClock) {
+    if(rra->requestRequests[apIndex].state == EMPTY) {
+        rra->requestRequests[apIndex].requesterPid = getpid();
+        rra->requestRequests[apIndex].timestamp.seconds = mainClock->seconds;
+        rra->requestRequests[apIndex].timestamp.nanoseconds = mainClock->nanoseconds;
+        rra->requestRequests[apIndex].state = SENT;
+    }
 }
 
 //Decided to do all Resource/Request functions 

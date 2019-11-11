@@ -39,6 +39,7 @@ int main(int arg, char* argv[]) {
     ResourceDescriptor* shmResourceDescPtr = (ResourceDescriptor*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_OSS_FLAGS);
     Request* shmRequestPtr = (Request*)initSharedMemory(SHM_KEY_REQUEST, shmRequestSize, &shmRequestID, SHM_OSS_FLAGS);
     Msg* shmMsgPtr = (Msg*)initSharedMemory(SHM_KEY_MSG, shmMsgSize, &shmMsgID, SHM_OSS_FLAGS);
+    RRA* shmRRAPtr = (RRA*)initSharedMemory(SHM_KEY_RRA, shmRRASize, &shmRRAID, SHM_OSS_FLAGS);
 
     Request* reqIterator = shmRequestPtr;
 
@@ -47,6 +48,7 @@ int main(int arg, char* argv[]) {
     initRequestArray(shmRequestPtr);
     initResourceDescriptorArray(shmResourceDescPtr);
     resetMsg(shmMsgPtr);
+    initRRA(shmRRAPtr);
 
     //Generate first random process spawn time
     Clock spawnTime;
@@ -79,6 +81,8 @@ int main(int arg, char* argv[]) {
                     }
                 }
 
+                usrOnSpawnRequest(newestChildPid, getIndexOfPid(newestChildPid), shmRequestPtr, shmResourceDescPtr);
+
                 //fprintf(stderr, "%d Process Spawned:\n", ++numProcesses);
                 printClock(shmClockPtr);
             
@@ -88,8 +92,16 @@ int main(int arg, char* argv[]) {
                 advanceClock(&spawnTime, 0, rand() % 499999999 + 1);
             }
         }
-
+        
         ossProcessRequests(shmRequestPtr, shmResourceDescPtr);
+
+        //READ REQUEST REQUESTS
+        for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
+            if(shmRRAPtr->requestRequests[i].state == SENT) {
+                usrSendRequest(shmRRAPtr->requestRequests[i].requesterPid, getIndexOfPid(shmRRAPtr->requestRequests[i].requesterPid), shmRequestPtr);
+                shmRRAPtr->requestRequests[i].state = EMPTY;
+            }
+        }
 
         //Critical section
         sem_wait(shmSemPtr);

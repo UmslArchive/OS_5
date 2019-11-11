@@ -26,6 +26,7 @@ int main(int arg, char* argv[]) {
     ResourceDescriptor* shmResourceDescPtr = (ResourceDescriptor*)initSharedMemory(SHM_KEY_RESOURCE, shmResourceDescSize, &shmResourceDescID, SHM_USR_FLAGS);
     Request* shmRequestPtr = (Request*)initSharedMemory(SHM_KEY_REQUEST, shmRequestSize, &shmRequestID, SHM_USR_FLAGS);
     Msg* shmMsgPtr = (Msg*)initSharedMemory(SHM_KEY_MSG, shmMsgSize, &shmMsgID, SHM_USR_FLAGS);
+    RRA* shmRRAPtr = (RRA*)initSharedMemory(SHM_KEY_RRA, shmRRASize, &shmRRAID, SHM_USR_FLAGS);
 
     Request* thisProcessesRequestPtr = shmRequestPtr;
     for(i = 0; i < indexInActivePsArray; ++i) {
@@ -55,15 +56,12 @@ int main(int arg, char* argv[]) {
     timeLimit.seconds = spawnTime.seconds;
     advanceClock(&timeLimit, 0, rand() % 499999999 + 1);
 
-    //Spawn inits and first request
-    usrOnSpawnRequest(getpid(), indexInActivePsArray, shmRequestPtr, shmResourceDescPtr);
-    updateClaimMatrix(shmRequestPtr);
-
     int count = 0;
     while(1) {
         if(checkIfPassedTime(shmClockPtr, &timeLimit) == 1) {
 
-            usrSendRequest(getpid(), indexInActivePsArray, shmRequestPtr);
+            //Send a request for a request...
+            usrSendRequestRequest(shmRRAPtr, getpid(), indexInActivePsArray, shmClockPtr);
             
             sem_wait(shmSemPtr);
                 count++;

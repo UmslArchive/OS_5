@@ -15,6 +15,7 @@ extern const key_t SHM_KEY_CLOCK;
 extern const key_t SHM_KEY_RESOURCE;
 extern const key_t SHM_KEY_REQUEST;
 extern const key_t SHM_KEY_MSG;
+extern const key_t SHM_KEY_RRA;
 
 //IDs
 extern int shmSemID;
@@ -22,6 +23,7 @@ extern int shmClockID;
 extern int shmResourceDescID;
 extern int shmRequestID;
 extern int shmMsgID;
+extern int shmRRAID;
 
 //Sizes
 extern const size_t shmSemSize;
@@ -29,6 +31,7 @@ extern const size_t shmClockSize;
 extern const size_t shmResourceDescSize;
 extern const size_t shmRequestSize;
 extern const size_t shmMsgSize;
+extern const size_t shmRRASize;
 
 //Oss Flags
 extern const int SHM_OSS_FLAGS;
@@ -54,6 +57,16 @@ typedef struct msg_struct {
     int index;
 } Msg;
 
+typedef struct req_req_struct {
+    pid_t requesterPid;
+    MsgState state;
+    Clock timestamp;
+} ReqReq;
+
+typedef struct req_req_arr_struct {
+    ReqReq requestRequests[MAX_CHILD_PROCESSES];
+} RRA;
+
 //Shared mem init functions
 sem_t* initShmSemaphore(const key_t key, const size_t size, int* shmid, int flags);
 void* initSharedMemory(const key_t key, const size_t size, int* shmid, int flags);
@@ -73,6 +86,10 @@ int checkIfPassedTime(Clock* mainClock, Clock* timeLimit);
 
 //Msg functions
 void resetMsg(Msg* msg);
+
+//Wack
+void initRRA(RRA* rra);
+void usrSendRequestRequest(RRA* rra, pid_t pid, int apIndex, Clock* mainClock);
 
 //Decided to do all Resource/Request functions 
 //inside of the resourceManage.* files

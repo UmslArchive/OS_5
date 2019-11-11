@@ -26,8 +26,8 @@ static void addToActiveProcesses() {
         }
         //fprintf(stderr, "Active process array full\n");
     }
-
-    fprintf(stderr, "Active process array is NULL--Process not added\n");
+    if(pid != 0)
+        fprintf(stderr, "Active process array is NULL--Process not added\n");
     return;
 }
 
@@ -126,7 +126,6 @@ int spawnProcess(int* newestChildPid) {
     }
 
     pid = fork();
-    //FROM HERE BELOW CANNOT ACCESS ACTIVE PROCESS ARRAY
 
     //Handle fork error
     if(pid < 0) {

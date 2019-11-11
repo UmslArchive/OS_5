@@ -234,7 +234,7 @@ void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_
         resIterator++;
     }
 
-    printf("[%d]PROCESSING REQUEST pid = %d, res = %d, amount = %d\n",getIndexOfPid(pid), pid, requestIterator->resource, allocAmount);
+    fprintf(stderr, "[%d]PROCESSING REQUEST pid = %d, res = %d, amount = %d\n",getIndexOfPid(pid), pid, requestIterator->resource, allocAmount);
 
     //While there are still resources to alloc
     while(allocAmount > 0) {
@@ -267,7 +267,7 @@ void denyRequest(Request* requestIterator, pid_t pid) {
 //usrPs process resource functions:
 
 void usrOnSpawnRequest(pid_t pid, int resIndex, Request* reqArray, ResourceDescriptor* descArray) {
-    Request* reqIterator = reqIterator;
+    Request* reqIterator = reqArray;
 
     int k;
     for(k = 0; k < resIndex; ++k) {
@@ -334,7 +334,7 @@ void usrOnSpawnRequest(pid_t pid, int resIndex, Request* reqArray, ResourceDescr
 //Valid meaning doesn't attempt anything impossible, but could still be an
 //unsafe request. OSS will check for safety, not child process.
 void usrSendRequest(pid_t pid, int resIndex, Request* reqArray) {
-    Request* reqIterator = reqIterator;
+    Request* reqIterator = reqArray;
 
     int k;
     for(k = 0; k < resIndex; ++k) {
