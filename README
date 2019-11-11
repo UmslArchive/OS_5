@@ -1,0 +1,37 @@
+Author: Colby Ackerman
+Class: CS4760
+Assignment: 5
+Date: 11/10/19
+
+Install with `make`
+
+There is also `make test` which compiles but is broken.
+
+My approach to this project:
+
+I tried to modularize the components of this project as much as possible.
+It ended up backfiring though because I failed to consider a couple of
+components that needed to be in shared memory. (matrices, and active process array).
+By the time I realized that these needed to be in shared memory, it would have
+required such a large refactor, and I was out of time, so I attempted a cheap
+workaround by implementing a means for usr processes to submit a request for
+oss to submit a request in their stead. Since all of the matrices are stack
+allocated, any usr functions contained in resourceManage are not operating on
+the same set of matrices contained in oss, which is why they needed to be in
+shared memory from the start. I attempted to offload all requesting to oss,
+so that all operations on the matrices would only be made on one side of the
+fork, but it didn't work out.
+
+So, as I was building this assignment out, I was testing everything non-concurrently
+in the test.c file (which is now broken due to changes made after switching
+gears to concurrently processing requests). It actually was working properly 
+non-concurrently in the tests at one point, it can probably be found somewhere
+in my poorly labeled commit history. (https://github.com/CSnackerman/umslOsAss5)
+
+Anyway I got lost in the sauce and ran out of time, so currently every
+request gets denied pretty much. 
+
+Also, I got the shared memory cleaning up really nicely and signal handling
+working really well until I started adding in the resource management stuff.
+At the very least I increased the amount of reusable code in this project
+compared to last.
