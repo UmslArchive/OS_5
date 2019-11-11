@@ -49,7 +49,6 @@ int main(int arg, char* argv[]) {
     initResourceDescriptorArray(shmResourceDescPtr);
     resetMsg(shmMsgPtr);
     initRRA(shmRRAPtr);
-    updateAvailableVector(shmResourceDescPtr);
 
     //Generate first random process spawn time
     Clock spawnTime;
@@ -59,6 +58,8 @@ int main(int arg, char* argv[]) {
     int numProcesses = 0;
   
     while(1) {
+
+        updateAvailableVector(shmResourceDescPtr);
         
         if(checkIfPassedTime(shmClockPtr, &spawnTime) == 1) {
             //Spawn
@@ -72,6 +73,7 @@ int main(int arg, char* argv[]) {
                 //fprintf(stderr, "OSS index %d of pid %d SENT\n", getIndexOfPid(newestChildPid), newestChildPid);
 
                 while(1) {
+                    
                     if(shmMsgPtr->state == RECEIVED) {
                         //fprintf(stderr, "RESET\n");
                         shmMsgPtr->state = EMPTY;
@@ -80,7 +82,6 @@ int main(int arg, char* argv[]) {
                 }
 
                 usrOnSpawnRequest(newestChildPid, getIndexOfPid(newestChildPid), shmRequestPtr, shmResourceDescPtr);
-                updateClaimMatrix(shmRequestPtr);
 
                 //fprintf(stderr, "%d Process Spawned:\n", ++numProcesses);
                 printClock(shmClockPtr);
@@ -91,14 +92,13 @@ int main(int arg, char* argv[]) {
                 advanceClock(&spawnTime, 0, rand() % 499999999 + 1);
             }
         }
-
+        
         ossProcessRequests(shmRequestPtr, shmResourceDescPtr);
 
         //READ REQUEST REQUESTS
         for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
             if(shmRRAPtr->requestRequests[i].state == SENT) {
                 usrSendRequest(shmRRAPtr->requestRequests[i].requesterPid, getIndexOfPid(shmRRAPtr->requestRequests[i].requesterPid), shmRequestPtr);
-                ossProcessRequests(shmRequestPtr, shmResourceDescPtr);
                 shmRRAPtr->requestRequests[i].state = EMPTY;
             }
         }

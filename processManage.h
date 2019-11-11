@@ -28,7 +28,7 @@ int initOssProcessManager();
 int destroyProcessManager();
 
 //oss process management functions:
-int spawnProcess(int* newestChildPid);
+int spawnProcess();
 void waitNoBlock();
 int areActiveProcesses();
 void killChildren();
