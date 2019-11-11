@@ -222,6 +222,7 @@ void testProcessSendRequest() {
     initOssProcessManager();
     Request* req = malloc(shmRequestSize);
     ResourceDescriptor* desc = malloc(shmResourceDescSize);
+    Clock dummyClock;
     initResourceDescriptorArray(desc);
     initRequestArray(req);
 
@@ -257,11 +258,11 @@ void testProcessSendRequest() {
 
     fprintf(stderr, "\n");
 
-    ossProcessRequests(req, desc);
+    ossProcessRequests(req, desc, &dummyClock);
 
     for(i = 0; i < 10000; ++i) {
         usrSendRequest(getPidOfIndex(rand() % MAX_CHILD_PROCESSES), i,  req);
-        ossProcessRequests(req, desc);
+        ossProcessRequests(req, desc, &dummyClock);
     }
 
     /* fprintf(stderr, "NEXT GO AROUND+================================\n");
