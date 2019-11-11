@@ -6,6 +6,9 @@
 
 #include "resourceManage.h"
 
+FILE* logFile;
+int lineCount;
+
 //Shared memory struct array sizes
 const size_t shmResourceDescSize = MAX_RESOURCES * sizeof(ResourceDescriptor);
 const size_t shmRequestSize = MAX_CHILD_PROCESSES * sizeof(Request);
@@ -48,6 +51,9 @@ void initMatricesAndVectors() {
     initMatrix(claimMat);
     initVector(resVec);
     initVector(availVec);
+
+    logFile = fopen("log.txt", "w+");
+    fclose(logFile);
 }
 
 void initRequestArray(Request* reqArray) {
@@ -451,11 +457,13 @@ void updateAvailableVector(ResourceDescriptor* resArray) {
     }
 }
 
-void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
+void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray, Clock* mainClock) {
     Request* iterator = reqArray;
     ResourceDescriptor* descIter = resArray;
     int i, j, k;
     int count = 0;
+
+    logFile = fopen("log.txt", "a");
 
     //Deallocate all finished processes
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
@@ -496,12 +504,12 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
 
             //Check for safety
             if(isSafeState(iterator) == 1) {
-                fprintf(stderr, "%d approved\n", i);
+                fprintf(logFile, "pid %d request for %d of resource %d APPROVED at %d:%d\n", getPidOfIndex(i), iterator->amount, iterator->resource, mainClock->seconds, mainClock->nanoseconds);
                 approveRequest(iterator, resArray, iterator->pid);
                 iterator->reqState = APPROVED;
             }
             else {
-                fprintf(stderr, "%d denied\n", i);
+                fprintf(logFile, "pid %d request for %d of resource %d DENIED at %d:%d\n", getPidOfIndex(i), iterator->amount, iterator->resource, mainClock->seconds, mainClock->nanoseconds);
                 printResDesc(resArray, iterator->resource);
                 fprintf(stderr, "REQUEST from %d: res=%d amt=%d at %d:%d\n",
                     iterator->pid,
@@ -516,6 +524,8 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
         }
         iterator++;
     }
+
+    fclose(logFile);
 }
 
 void printRequest(Request* reqArray, pid_t pid) {

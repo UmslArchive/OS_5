@@ -100,7 +100,7 @@ int main(int arg, char* argv[]) {
             }
         }
 
-        ossProcessRequests(shmRequestPtr, shmResourceDescPtr);
+        ossProcessRequests(shmRequestPtr, shmResourceDescPtr, shmClockPtr);
 
         //Critical section
         sem_wait(shmSemPtr);

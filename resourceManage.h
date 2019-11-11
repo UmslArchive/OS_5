@@ -68,7 +68,7 @@ void initMatricesAndVectors();
 void updateClaimMatrix(Request* reqArray);
 void updateAllocMatrix(ResourceDescriptor* resArray);
 void updateAvailableVector(ResourceDescriptor* resArray);
-void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray);
+void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray, Clock* mainClock);
 int isSafeState(Request* req);
 void approveRequest(Request* requestIterator, ResourceDescriptor* resArray, pid_t pid);
 void denyRequest(Request* requestIterator, pid_t pid);
