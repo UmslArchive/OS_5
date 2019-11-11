@@ -7,6 +7,7 @@
 CC = gcc
 CFLAGS = -I . -g
 OBJECTS = shared.o processManage.o resourceManage.o interrupts.o
+
 .SUFFIXES: .c .o
 
 all: oss usr

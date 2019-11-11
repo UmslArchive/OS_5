@@ -300,6 +300,8 @@ void usrOnSpawnRequest(pid_t pid, int resIndex, Request* reqArray, ResourceDescr
                 atLeastOne = 1;
         }
     }
+
+    updateClaimMatrix(reqArray);
     
 
     //Debug
@@ -468,6 +470,7 @@ void ossProcessRequests(Request* reqArray, ResourceDescriptor* resArray) {
                 descIter++;
             }
         }
+        iterator->reqState == NULL_PROCESS;
         iterator++;
     }
 

@@ -29,9 +29,6 @@ int main(int arg, char* argv[]) {
     RRA* shmRRAPtr = (RRA*)initSharedMemory(SHM_KEY_RRA, shmRRASize, &shmRRAID, SHM_USR_FLAGS);
 
     Request* thisProcessesRequestPtr = shmRequestPtr;
-    for(i = 0; i < indexInActivePsArray; ++i) {
-        thisProcessesRequestPtr++;
-    }
 
     //Get the index in the active process array before anything!
     while(1) {
@@ -41,6 +38,10 @@ int main(int arg, char* argv[]) {
             shmMsgPtr->state = RECEIVED;
             break;
         }
+    }
+
+    for(i = 0; i < indexInActivePsArray; ++i) {
+        thisProcessesRequestPtr++;
     }
 
     //fprintf(stderr, "INDEX = %d of pid %d\n", indexInActivePsArray, getpid());
@@ -81,7 +82,7 @@ int main(int arg, char* argv[]) {
         }        
         
         //Check if a signal was received
-        if(usrSignalReceivedFlag == 1  || count > 20 )
+        if(usrSignalReceivedFlag == 1 || thisProcessesRequestPtr->reqState == FINISHED || thisProcessesRequestPtr->reqState == NULL_PROCESS)
             break;
     }
 

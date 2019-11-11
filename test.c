@@ -241,7 +241,7 @@ void testProcessSendRequest() {
     //Spawn max dummy processes and send spawn requests and update claim mat
     for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
         spawnDummyProcess();
-        usrOnSpawnRequest(getPidOfIndex(i), req, desc);
+        usrOnSpawnRequest(getPidOfIndex(i), i, req, desc);
         updateClaimMatrix(req);
     }
 
@@ -260,7 +260,7 @@ void testProcessSendRequest() {
     ossProcessRequests(req, desc);
 
     for(i = 0; i < 10000; ++i) {
-        usrSendRequest(getPidOfIndex(rand() % MAX_CHILD_PROCESSES), req);
+        usrSendRequest(getPidOfIndex(rand() % MAX_CHILD_PROCESSES), i,  req);
         ossProcessRequests(req, desc);
     }
 

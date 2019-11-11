@@ -49,6 +49,7 @@ int main(int arg, char* argv[]) {
     initResourceDescriptorArray(shmResourceDescPtr);
     resetMsg(shmMsgPtr);
     initRRA(shmRRAPtr);
+    updateAvailableVector(shmResourceDescPtr);
 
     //Generate first random process spawn time
     Clock spawnTime;
@@ -58,8 +59,6 @@ int main(int arg, char* argv[]) {
     int numProcesses = 0;
   
     while(1) {
-
-        updateAvailableVector(shmResourceDescPtr);
         
         if(checkIfPassedTime(shmClockPtr, &spawnTime) == 1) {
             //Spawn
@@ -92,8 +91,6 @@ int main(int arg, char* argv[]) {
                 advanceClock(&spawnTime, 0, rand() % 499999999 + 1);
             }
         }
-        
-        ossProcessRequests(shmRequestPtr, shmResourceDescPtr);
 
         //READ REQUEST REQUESTS
         for(i = 0; i < MAX_CHILD_PROCESSES; ++i) {
@@ -102,6 +99,8 @@ int main(int arg, char* argv[]) {
                 shmRRAPtr->requestRequests[i].state = EMPTY;
             }
         }
+
+        ossProcessRequests(shmRequestPtr, shmResourceDescPtr);
 
         //Critical section
         sem_wait(shmSemPtr);
